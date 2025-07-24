@@ -20,4 +20,8 @@ public class Producers {
 
     @Column(name = "number")
     private int number;
+
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private Admin admin;
 }
