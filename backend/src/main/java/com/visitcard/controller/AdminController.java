@@ -21,11 +21,4 @@ public class AdminController {
         return ResponseEntity.ok(adminService.register(admin));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<Admin> login(@RequestParam String login, @RequestParam String password) {
-        return adminService.login(login, password)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(401).build());
-    }
-
 }
