@@ -1,3 +1,4 @@
+
 package com.visitcard.service;
 
 
@@ -40,4 +41,3 @@ public class AdminService {
                 .orElseThrow(() -> new RuntimeException("Admin not found"));
     }
 }
-
