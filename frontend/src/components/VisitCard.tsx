@@ -13,7 +13,7 @@ import { useState, useRef, useEffect } from "react";
 
 const { Title, Text, Link } = Typography;
 
-const VisitCard = () => {
+export const VisitCard = () => {
     const contactURL = "https://link.khachatryanholding.com/VisitCard";
 
     const [isModalVisible, setIsModalVisible] = useState(false);

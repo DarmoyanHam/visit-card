@@ -32,3 +32,29 @@
   background-color: rgb(47, 47, 47) !important;
   color: white !important;
 }
+
+.links {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background-color: transparent;
+  transition: transform 0.2s ease;
+}
+
+.links:hover {
+  background-color: #000526ff !important;
+  transform: scale(0.9);
+}
+
+.links:focus,
+.links:active,
+.links:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 768px) {
+  .login-side-info {
+    display: none !important;
+  }
+}

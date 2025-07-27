@@ -1,0 +1,13 @@
+export const HOME_PATH = "/";
+export const SIGNUP_PATH = "/signup";
+export const CARD_PATH = "/card/:adminId";
+export const LOGIN_PATH = "login";
+export const ADMIN_PATH = "/admin";
+export const ADMIN_HOME_PATH = "home";
+export const ADMIN_CONTACTS_PATH = "contacts";
+export const ADMIN_SPONSORS_PATH = "sponsors";
+export const ADMIN_APPOINTMENTS_PATH = "appointments";
+export const ADMIN_STATISTICS_PATH = "statistics";
+export const ABOUT_PATH = "about";
+export const ORDER_PATH = "order";
+export const PARTNERS_PATH = "partners";
