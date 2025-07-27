@@ -4,6 +4,8 @@ package com.visitcard.service;
 
 import com.visitcard.entity.Admin;
 import com.visitcard.repository.AdminRepository;
+import com.visitcard.validation.LoginValidator;
+import com.visitcard.validation.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,20 +26,20 @@ public class AdminService {
     }
 
     public Admin register(Admin admin) {
+        if (adminRepository.existsByLogin(admin.getLogin())) {
+            throw new RuntimeException("Login already taken");
+        }
+
+        if (!LoginValidator.isValid(admin.getLogin())) {
+            throw new RuntimeException("Invalid login format");
+        }
+
+        if (!PasswordValidator.isValid(admin.getPassword())) {
+            throw new RuntimeException("Weak password");
+        }
+
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         return adminRepository.save(admin);
     }
 
-    public Optional<Admin> login(String login, String rawPassword) {
-        Optional<Admin> admin = adminRepository.findByLogin(login);
-        if (admin.isPresent() && passwordEncoder.matches(rawPassword, admin.get().getPassword())) {
-            return admin;
-        }
-        return Optional.empty();
-    }
-
-    public Admin getById(Long id) {
-        return adminRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Admin not found"));
-    }
 }

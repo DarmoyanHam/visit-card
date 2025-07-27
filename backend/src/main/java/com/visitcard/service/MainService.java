@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MainService {
@@ -45,6 +44,16 @@ public class MainService {
             case "nameHy" -> main.setNameHy(value);
             case "logo" -> main.setLogo(value);
             case "backgroundImageUrl" -> main.setBackgroundImageUrl(value);
+            case "slogan_positionEn" -> main.setSlogan_positionEn(value);
+            case "slogan_positionHy" -> main.setSlogan_positionHy(value);
+            case "slogan_positionRu" -> main.setSlogan_positionRu(value);
+            case "iconBackgroundColor" -> main.setIconBackgroundColor(value);
+            case "logoBackgroundColor" -> main.setLogoBackgroundColor(value);
+            case "nameColor" -> main.setNameColor(value);
+            case "slogan_positionColor" -> main.setSlogan_positionColor(value);
+            case "buttonsColor" -> main.setButtonsColor(value);
+            case "addContactColor" -> main.setAddContactColor(value);
+            case "languageColor" -> main.setLanguageColor(value);
             default -> throw new IllegalArgumentException("Unknown field: " + fieldName);
         }
 
