@@ -8,7 +8,7 @@ import "./cards.css";
 const { Title, Paragraph } = Typography;
 
 type LoginForm = {
-  username: string;
+  login: string;
   password: string;
 };
 
@@ -18,6 +18,9 @@ export const LoginContainer = () => {
 
   const onFinish = async (values: LoginForm) => {
     setLoading(true);
+
+    console.log(JSON.stringify(values));
+
     try {
       const response = await fetch("http://192.168.18.6:8080/api/auth/login", {
         method: "POST",
@@ -88,7 +91,7 @@ export const LoginContainer = () => {
             borderStyle: "solid",
           }}>
           <Form name="login" onFinish={onFinish} layout="vertical">
-            <Form.Item name="username" label={<span style={{ color: "white" }}>Username</span>} rules={[{ required: true }]}>
+            <Form.Item name="login" label={<span style={{ color: "white" }}>Username</span>} rules={[{ required: true }]}>
               <Input />
             </Form.Item>
 
