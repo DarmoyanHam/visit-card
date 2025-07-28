@@ -7,14 +7,19 @@ import "./cards.css";
 
 const { Title, Paragraph } = Typography;
 
+type LoginForm = {
+  username: string;
+  password: string;
+};
+
 export const LoginContainer = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const onFinish = async (values: { username: string; password: string }) => {
+  const onFinish = async (values: LoginForm) => {
     setLoading(true);
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("http://192.168.18.6:8080/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,11 +28,12 @@ export const LoginContainer = () => {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || "Login failed");
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || "Login failed");
       }
 
-      const token = await response.json();
+
+      const { token } = await response.json();
       localStorage.setItem("token", token);
       message.success("Login successful!");
       navigate(`${ADMIN_PATH}/${ADMIN_HOME_PATH}`);

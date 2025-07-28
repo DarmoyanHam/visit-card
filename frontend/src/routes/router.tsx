@@ -29,6 +29,10 @@ import { AppointmentPage } from "../pages/AppointmentPage";
 import { StatisticsPage } from "../pages/StatisticsPage";
 
 
+{/* <ProtectedRoute>
+        <AdminLayout />
+      </ProtectedRoute> */}
+
 export const router = createBrowserRouter([
   {
     path: CARD_PATH,
@@ -67,7 +71,7 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <AdminLayout />
-      </ProtectedRoute>
+      </ProtectedRoute> 
     ),
     children: [
       {
