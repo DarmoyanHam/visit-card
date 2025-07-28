@@ -1,4 +1,4 @@
-import { AdminContainer } from "../components/AdminContainer"
+import { AdminContainer } from "../components/HomeContainer"
 
 export const AdminPage = () => {
     return <AdminContainer />

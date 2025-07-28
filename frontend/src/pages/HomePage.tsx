@@ -1,5 +1,5 @@
-import { AdminContainer } from "../components/AdminContainer"
+import { HomeContainer } from "../components/HomeContainer"
 
 export const HomePage = () => {
-    return <AdminContainer />
+    return <HomeContainer />
 }
