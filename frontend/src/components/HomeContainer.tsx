@@ -1,8 +1,9 @@
-import { Card, Form, Input, Checkbox, Select, Button, Upload, ColorPicker } from "antd";
+import { Card, Form, Input, Checkbox, Typography, Button, Upload, ColorPicker, Row, Col } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
 const { TextArea } = Input;
+const { Title } = Typography;
 
 export const HomeContainer = () => {
   const [form] = Form.useForm();
@@ -15,14 +16,26 @@ export const HomeContainer = () => {
   return (
     <div className="max-w-4xl mx-auto py-10">
       <Card 
-        title="Редактирование страницы визитки" bordered 
+        title={
+          <Row justify="space-between" align="middle">
+            <Col>
+              <Title level={3} style={{ color: "white", margin: 0 }}>
+                Edit Visit Card
+              </Title>
+            </Col>
+            <Col>
+              <Button >Save</Button>
+            </Col>
+          </Row>
+        }
         className="shadow-xl rounded-2xl"
         style={{
-            backgroundColor: "#313346ff",
+            backgroundColor: "#262835ff",
             borderColor: "#313346ff",
             borderWidth: 1,
             borderStyle: "solid",
-        }}>
+        }}  
+      >
         <Form
           layout="vertical"
           form={form}
@@ -30,94 +43,112 @@ export const HomeContainer = () => {
           initialValues={{ sloganBold: true, feedback: true }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Form.Item label="Пароль" name="password">
+            <Form.Item label={<span style={{ color: "white" }}>Password</span>} name="password" >
               <Input.Password placeholder="Введите пароль" />
             </Form.Item>
 
-            <Form.Item label="URL" name="url">
+            <Form.Item label={<span style={{ color: "white" }}>URL</span>} name="url">
               <Input />
             </Form.Item>
 
-            <Form.Item label="Название (Армянский)" name="nameHy">
+            <Form.Item label={<span style={{ color: "white" }}>Name(Armenian)</span>} name="nameHy">
               <Input />
             </Form.Item>
 
-            <Form.Item label="Название (Русский)" name="nameRu">
+            <Form.Item label={<span style={{ color: "white" }}>Name(Russian)</span>} name="nameRu">
               <Input />
             </Form.Item>
 
-            <Form.Item label="Название (Английский)" name="nameEn">
+            <Form.Item label={<span style={{ color: "white" }}>Name(English)</span>} name="nameEn">
               <Input />
             </Form.Item>
 
-            <Form.Item label="Слоган/Должность (Армянский)" name="sloganHy">
+            <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(Armenian)</span>} name="sloganHy">
               <TextArea rows={2} />
             </Form.Item>
 
-            <Form.Item label="Слоган/Должность (Русский)" name="sloganRu">
+            <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(Russian)</span>} name="sloganRu">
               <TextArea rows={2} />
             </Form.Item>
 
-            <Form.Item label="Слоган/Должность (Английский)" name="sloganEn">
+            <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(English)</span>} name="sloganEn">
               <TextArea rows={2} />
             </Form.Item>
 
-            <div style={{ display: "flex" }}>
-                <Form.Item label="color for name" name="nameColor">
-                    <ColorPicker value={color} />
+            <Row gutter={[16, 16]}>
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Form.Item label={<span style={{ color: "white" }}>Name color</span>} name="nameColor">
+                  <ColorPicker value={color} />
                 </Form.Item>
+              </Col>
 
-                <Form.Item label="Цвет имени" name="nameColor">
-                    <ColorPicker value={color} />
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Form.Item label={<span style={{ color: "white" }}>Logo background color</span>} name="logoBgColor">
+                  <ColorPicker value={color} />
                 </Form.Item>
+              </Col>
 
-                <Form.Item label="Цвет Слоган/Должность" name="sloganColor">
-                    <ColorPicker value={color} />
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Form.Item label={<span style={{ color: "white" }}>Slogan/position color</span>} name="sloganColor">
+                  <ColorPicker value={color} />
                 </Form.Item>
+              </Col>
 
-                <Form.Item label="Цвет значка" name="iconColor">
-                    <ColorPicker value={color} />
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Form.Item label={<span style={{ color: "white" }}>Icon color</span>} name="iconColor">
+                  <ColorPicker value={color} />
                 </Form.Item>
+              </Col>
 
-                <Form.Item label="Цвет фона значка" name="iconBgColor">
-                    <ColorPicker value={color} />
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Form.Item label={<span style={{ color: "white" }}>Icon background color</span>} name="iconBgColor">
+                  <ColorPicker value={color} />
                 </Form.Item>
+              </Col>
 
-                <Form.Item label="Цвет названия кнопки" name="buttonColor">
-                    <ColorPicker value={color} />
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Form.Item label={<span style={{ color: "white" }}>Button name color</span>} name="buttonColor">
+                  <ColorPicker value={color} />
                 </Form.Item>
+              </Col>
 
-                <Form.Item label="Цвет 'Добавить в контакты'" name="addToContactColor">
-                    <ColorPicker value={color} />
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Form.Item label={<span style={{ color: "white" }}>"Add to contacts" button color</span>} name="addToContactColor">
+                  <ColorPicker value={color} />
                 </Form.Item>
+              </Col>
 
-                <Form.Item label="Цвет кнопки выбора языка" name="langBtnColor">
-                    <ColorPicker value={color} />
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Form.Item label={<span style={{ color: "white" }}>Language button color</span>} name="langBtnColor">
+                  <ColorPicker value={color} />
                 </Form.Item>
-            </div>
+              </Col>
+            </Row>
 
-            <Form.Item label="Опции">
+
+            <Form.Item label={<span style={{ color: "white" }}>Selections</span>}>
                 <Checkbox.Group>
                     <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-                        <Checkbox value="opt1">Опция 1</Checkbox>
-                        <Checkbox value="opt2">Опция 2</Checkbox>
-                        <Checkbox value="opt3">Опция 3</Checkbox>
-                        <Checkbox value="opt4">Опция 4</Checkbox>
+                        <Checkbox value="opt4"><span style={{ color: "white" }}>Slogan/Position bold</span></Checkbox>
+                        <Checkbox value="opt1"><span style={{ color: "white" }}>Button name shadow</span></Checkbox>
+                        <Checkbox value="opt2"><span style={{ color: "white" }}>Disable icon blink</span></Checkbox>
+                        <Checkbox value="opt3"><span style={{ color: "white" }}>Book a visit</span></Checkbox>
+                        <Checkbox value="opt4"><span style={{ color: "white" }}>Feedback</span></Checkbox>
                     </div>
                 </Checkbox.Group>
             </Form.Item>
 
-            <Form.Item label="Логотип" name="logo">
+            <Form.Item label={<span style={{ color: "white" }}>Logo</span>} name="logo">
               <Upload listType="picture" maxCount={1} beforeUpload={() => false}>
-                <Button icon={<UploadOutlined />}>Загрузить логотип</Button>
+                <Button icon={<UploadOutlined />}>Upload</Button>
               </Upload>
             </Form.Item>
-          </div>
 
-          <div className="text-center mt-8">
-            <Button type="primary" htmlType="submit" size="large">
-              Сохранить
-            </Button>
+            <Form.Item label={<span style={{ color: "white" }}>Background picture</span>} name="logo">
+              <Upload listType="picture" maxCount={1} beforeUpload={() => false}>
+                <Button icon={<UploadOutlined />}>Upload</Button>
+              </Upload>
+            </Form.Item>
           </div>
         </Form>
       </Card>

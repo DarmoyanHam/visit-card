@@ -1,0 +1,28 @@
+.custom-table-wrapper {
+  padding: 16px;
+  background-color: #313346;
+}
+
+.custom-dark-table .ant-table,
+.custom-dark-table .ant-table-thead > tr > th,
+.custom-dark-table .ant-table-tbody > tr > td {
+  background-color: #313346 !important;
+  color: white !important;
+  border-color: #43445a !important;
+}
+
+.custom-dark-table .ant-checkbox-inner {
+  background-color: #43445a;
+  border-color: white;
+}
+
+.custom-dark-table .ant-input {
+  background-color: #43445a;
+  color: white;
+  border-color: white;
+}
+
+.custom-dark-table .ant-input[disabled] {
+  color: rgba(255, 255, 255, 0.5);
+  background-color: #2a2b3a;
+}

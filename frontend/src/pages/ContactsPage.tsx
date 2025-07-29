@@ -1,3 +1,5 @@
+import { ContactTable } from "../components/ContactTable"
+
 export const ContactsPage = () => {
-    return <></>
+    return <ContactTable />
 }
