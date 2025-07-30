@@ -1,6 +1,7 @@
 import { Card, Form, Input, Checkbox, Typography, Button, Upload, ColorPicker, Row, Col } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import "./cards.css";
 
 const { TextArea } = Input;
 const { Title } = Typography;

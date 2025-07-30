@@ -85,7 +85,7 @@ export const LoginContainer = () => {
             New opportunities for your business. Order your digital business
             card now.
           </Paragraph>
-          <Button style={{ backgroundColor: "white" }} size="large">
+          <Button size="large">
             Order
           </Button>
         </Col>

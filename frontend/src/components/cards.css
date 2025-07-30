@@ -34,15 +34,17 @@
 }
 
 .links {
+  background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
-  background-color: transparent;
+  color: white;
+  padding: 0;
   transition: transform 0.2s ease;
 }
 
 .links:hover {
-  background-color: #000526ff !important;
+  background-color: transparent !important;
   transform: scale(0.9);
 }
 
@@ -51,10 +53,71 @@
 .links:focus-visible {
   outline: none !important;
   box-shadow: none !important;
+  background-color: transparent !important;
+  border: none !important;
 }
 
 @media (max-width: 768px) {
   .login-side-info {
     display: none !important;
   }
+}
+
+.ant-input,
+.ant-input-password,
+.ant-input-affix-wrapper,
+.ant-input-textarea {
+  background-color: #43445a !important;
+  color: white;
+  border: 1px solid #5a5b70;
+}
+
+.ant-input::placeholder,
+.ant-input-password input::placeholder,
+.ant-input-textarea::placeholder {
+  color: #b0b0b0;
+}
+
+.ant-btn {
+  background-color: #43445a;
+  color: white;
+  border: 1px solid #5a5b70;
+}
+
+.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+  background-color: #43445a !important;
+  color: white !important;
+  border-color: #5a5b70 !important;
+}
+
+.ant-checkbox-inner {
+  background-color: #313346ff !important;
+  border-color: #5a5b70 !important;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #1890ff !important; 
+  border-color: #1890ff !important;
+}
+
+.ant-modal-content {
+  background-color: #313346ff !important;
+  color: white;
+}
+
+.ant-modal-header {
+  background-color: #313346ff !important;
+  color: white;
+  border-bottom: 1px solid #5a5b70;
+}
+
+.ant-modal-title {
+  color: white !important;
+}
+
+.ant-modal-footer {
+  background-color: #313346ff !important;
+  border-top: 1px solid #5a5b70;
 }
