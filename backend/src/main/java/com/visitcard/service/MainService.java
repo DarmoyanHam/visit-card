@@ -25,15 +25,8 @@ public class MainService {
         return mainRepository.findAll();
     }
 
-
-
-    public MainPage getById(String login) {
-        return mainRepository.findByLogin(login)
-                .orElseThrow(() -> new RuntimeException("MainPage not found"));
-    }
-
-    public MainPage getByLogin(String login) {
-        return mainRepository.findByLogin(login)
+    public MainPage getByToken(String token) {
+        return mainRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("MainPage not found"));
     }
 
@@ -42,8 +35,8 @@ public class MainService {
     }
 
 
-    public MainPage updateField(String login, String fieldName, String value) {
-        MainPage main = getByLogin(login);
+    public MainPage updateField(String token, String fieldName, String value) {
+        MainPage main = getByToken(token);
 
         switch (fieldName) {
             case "password" -> main.setPassword(value);
@@ -68,8 +61,8 @@ public class MainService {
         return mainRepository.save(main);
     }
 
-    public void saveNewDesign(String mainPageLogin) {
-        MainPage page = mainRepository.findByLogin(mainPageLogin)
+    public void saveNewDesign(String token) {
+        MainPage page = mainRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("MainPage not found"));
         Design design = new Design();
         design.setMainPage(page);

@@ -1,6 +1,8 @@
 package com.visitcard.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,13 +27,16 @@ public class Admin {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "main_page_id", referencedColumnName = "id", nullable = true)
+    @JsonIgnore
     private MainPage mainPage;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "contact_id", referencedColumnName = "id", nullable = true)
+    @JsonIgnore
     private Contact contact;
 
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Producers> producers;
 
     public String getUsername() {
