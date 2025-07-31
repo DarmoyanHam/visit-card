@@ -1,28 +1,25 @@
 package com.visitcard.entity;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "main_page")
-public class MainPage {
-
+@Table(name = "design")
+public class Design {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "main_page_id")
+    private MainPage mainPage;
+
     @Column(name = "password")
     private String password;
-
-    @Column(name = "login")
-    private String login;
 
     @Column(name = "name_en")
     private String nameEn;
@@ -69,6 +66,6 @@ public class MainPage {
     @Column(name = "language_color")
     private String languageColor;
 
-    @OneToMany(mappedBy = "mainPage", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Design> designs = new ArrayList<>();
+    @Column(name = "version")
+    private int version = 1;
 }

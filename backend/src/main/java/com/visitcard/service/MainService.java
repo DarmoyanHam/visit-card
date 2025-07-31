@@ -1,16 +1,20 @@
 package com.visitcard.service;
 
+import com.visitcard.entity.Design;
 import com.visitcard.entity.MainPage;
+import com.visitcard.repository.DesignRepository;
 import com.visitcard.repository.MainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 public class MainService {
 
+    @Autowired
     private final MainRepository mainRepository;
+    @Autowired
+    private DesignRepository designRepository;
 
     @Autowired
     public MainService(MainRepository mainRepository) {
@@ -21,8 +25,15 @@ public class MainService {
         return mainRepository.findAll();
     }
 
-    public MainPage getById(Long id) {
-        return mainRepository.findById(id)
+
+
+    public MainPage getById(String login) {
+        return mainRepository.findByLogin(login)
+                .orElseThrow(() -> new RuntimeException("MainPage not found"));
+    }
+
+    public MainPage getByLogin(String login) {
+        return mainRepository.findByLogin(login)
                 .orElseThrow(() -> new RuntimeException("MainPage not found"));
     }
 
@@ -30,12 +41,9 @@ public class MainService {
         return mainRepository.save(mainPage);
     }
 
-    public void delete(Long id) {
-        mainRepository.deleteById(id);
-    }
 
-    public MainPage updateField(Long id, String fieldName, String value) {
-        MainPage main = getById(id);
+    public MainPage updateField(String login, String fieldName, String value) {
+        MainPage main = getByLogin(login);
 
         switch (fieldName) {
             case "password" -> main.setPassword(value);
@@ -58,5 +66,30 @@ public class MainService {
         }
 
         return mainRepository.save(main);
+    }
+
+    public void saveNewDesign(String mainPageLogin) {
+        MainPage page = mainRepository.findByLogin(mainPageLogin)
+                .orElseThrow(() -> new RuntimeException("MainPage not found"));
+        Design design = new Design();
+        design.setMainPage(page);
+        design.setPassword(page.getPassword());
+        design.setNameEn(page.getNameEn());
+        design.setNameRu(page.getNameRu());
+        design.setNameHy(page.getNameHy());
+        design.setLogo(page.getLogo());
+        design.setBackgroundImageUrl(page.getBackgroundImageUrl());
+        design.setSlogan_positionEn(page.getSlogan_positionEn());
+        design.setSlogan_positionHy(page.getSlogan_positionHy());
+        design.setSlogan_positionRu(page.getSlogan_positionRu());
+        design.setIconBackgroundColor(page.getIconBackgroundColor());
+        design.setLogoBackgroundColor(page.getLogoBackgroundColor());
+        design.setNameColor(page.getNameColor());
+        design.setSlogan_positionColor(page.getSlogan_positionColor());
+        design.setButtonsColor(page.getButtonsColor());
+        design.setAddContactColor(page.getAddContactColor());
+        design.setLanguageColor(page.getLanguageColor());
+        design.setVersion(design.getVersion() + 1);
+        designRepository.save(design);
     }
 }
