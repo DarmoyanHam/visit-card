@@ -5,7 +5,9 @@ import com.visitcard.entity.Design;
 import com.visitcard.entity.MainPage;
 import com.visitcard.repository.DesignRepository;
 import com.visitcard.service.MainService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,13 +26,19 @@ public class MainController {
         this.mainService = mainService;
     }
 
-    @GetMapping("/login/{login}")
-    public ResponseEntity<MainPage> getByLogin(@PathVariable String login) {
-        try {
-            return ResponseEntity.ok(mainService.getByLogin(login));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+    @GetMapping("/token")
+    public ResponseEntity<MainPage> getMainPageByToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            MainPage mainPage = mainService.getByToken(token);
+            if (mainPage != null) {
+                return ResponseEntity.ok(mainPage);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @PostMapping
@@ -39,13 +47,13 @@ public class MainController {
     }
 
 
-    @PatchMapping("/{login}/field")
+    @PatchMapping("/{token}/field")
     public ResponseEntity<?> updateField(
-            @PathVariable String login,
+            @PathVariable String token,
             @RequestParam String fieldName,
             @RequestParam String value) {
         try {
-            MainPage updated = mainService.updateField(login, fieldName, value);
+            MainPage updated = mainService.updateField(token, fieldName, value);
             return ResponseEntity.ok(updated);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -54,9 +62,9 @@ public class MainController {
         }
     }
 
-    @PostMapping("/design/save/{login}")
-    public ResponseEntity<String> saveDesign(@PathVariable String login) {
-        mainService.saveNewDesign(login);
+    @PostMapping("/design/save/{token}")
+    public ResponseEntity<String> saveDesign(@PathVariable String token) {
+        mainService.saveNewDesign(token);
         return ResponseEntity.ok("Design saved successfully");
     }
 

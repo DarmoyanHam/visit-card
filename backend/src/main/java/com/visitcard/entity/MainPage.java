@@ -1,6 +1,8 @@
 package com.visitcard.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -69,6 +71,15 @@ public class MainPage {
     @Column(name = "language_color")
     private String languageColor;
 
+    @Column(name = "token")
+    private String token;
+
     @OneToMany(mappedBy = "mainPage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Design> designs = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "admin_id", referencedColumnName = "id", nullable = true)
+    @JsonManagedReference
+    private Admin admin;
 }
