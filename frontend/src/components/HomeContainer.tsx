@@ -1,6 +1,20 @@
-import { Card, Form, Input, Checkbox, Typography, Button, Upload, ColorPicker, Row, Col } from "antd";
+import { 
+  Card, 
+  Form, 
+  Input, 
+  Checkbox, 
+  Typography, 
+  Button, 
+  Upload, 
+  ColorPicker, 
+  Row, 
+  Col 
+} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { 
+  useState, 
+  useEffect 
+} from "react";
 import "./cards.css";
 
 const { TextArea } = Input;
@@ -8,11 +22,47 @@ const { Title } = Typography;
 
 export const HomeContainer = () => {
   const [form] = Form.useForm();
-  const [color, setColor] = useState("#FFFFF000526ff")
+  const [color, setColor] = useState("#FFFFF000526ff");
 
-  const onFinish = (values) => {
-    console.log("Saved:", values);
-  };
+  const token = localStorage.getItem("token");
+
+
+  useEffect(() => {
+      fetch(`http://192.168.18.6:8080/api/main/token`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token,
+        }
+      })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch MainPage data");
+        return res.json();
+      })
+      .then((data) => {
+        form.setFieldsValue({
+          password: data.password || "",
+          login: data.login || "",
+          nameHy: data.nameHy || "",
+          nameRu: data.nameRu || "",
+          nameEn: data.nameEn || "",
+          sloganHy: data.sloganHy || "",
+          sloganRu: data.sloganRu || "",
+          sloganEn: data.sloganEn || "",
+          nameColor: data.nameColor,
+          logoBgColor: data.logoBgColor,
+          sloganColor: data.sloganColor,
+          iconColor: data.iconColor,
+          iconBgColor: data.iconBgColor,
+          buttonColor: data.buttonColor,
+          addToContactColor: data.addToContactColor,
+          langBtnColor: data.langBtnColor,
+        });
+      })
+      .catch((error) => {
+        console.error("Ошибка при загрузке данных:", error);
+      });
+  }, []);
 
   return (
     <div className="max-w-4xl mx-auto py-10">
@@ -40,28 +90,28 @@ export const HomeContainer = () => {
         <Form
           layout="vertical"
           form={form}
-          onFinish={onFinish}
+          onFinish={() => {}}
           initialValues={{ sloganBold: true, feedback: true }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Form.Item label={<span style={{ color: "white" }}>Password</span>} name="password" >
-              <Input.Password placeholder="Введите пароль" />
+              <Input.Password placeholder="Input password" />
             </Form.Item>
 
-            <Form.Item label={<span style={{ color: "white" }}>URL</span>} name="url">
-              <Input />
+            <Form.Item label={<span style={{ color: "white" }}>Login</span>} name="login">
+              <Input placeholder="Input login"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Name(Armenian)</span>} name="nameHy">
-              <Input />
+              <Input placeholder="Անուն"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Name(Russian)</span>} name="nameRu">
-              <Input />
+              <Input placeholder="Имя"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Name(English)</span>} name="nameEn">
-              <Input />
+              <Input placeholder="Name"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(Armenian)</span>} name="sloganHy">
