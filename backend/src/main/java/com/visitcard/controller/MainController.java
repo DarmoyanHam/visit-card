@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -47,13 +46,12 @@ public class MainController {
     }
 
 
-    @PatchMapping("/{token}/field")
-    public ResponseEntity<?> updateField(
+    @PatchMapping("/{token}/fields")
+    public ResponseEntity<?> updateFields(
             @PathVariable String token,
-            @RequestParam String fieldName,
-            @RequestParam String value) {
+            @RequestBody Map<String, String> updates) {
         try {
-            MainPage updated = mainService.updateField(token, fieldName, value);
+            MainPage updated = mainService.updateFields(token, updates);
             return ResponseEntity.ok(updated);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -75,7 +73,6 @@ public class MainController {
         Design design = designRepository
                 .findByMainPageIdAndVersion(mainPageId, version)
                 .orElseThrow(() -> new RuntimeException("Design not found"));
-
         return ResponseEntity.ok(new DesignDto(design));
     }
 
