@@ -26,14 +26,8 @@ public class MainPage {
     @Column(name = "login")
     private String login;
 
-    @Column(name = "name_en")
-    private String nameEn;
-
-    @Column(name = "name_ru")
-    private String nameRu;
-
-    @Column(name = "name_hy")
-    private String nameHy;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "logo")
     private String logo;

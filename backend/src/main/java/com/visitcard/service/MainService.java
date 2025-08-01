@@ -7,6 +7,7 @@ import com.visitcard.repository.MainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MainService {
@@ -35,29 +36,30 @@ public class MainService {
     }
 
 
-    public MainPage updateField(String token, String fieldName, String value) {
+    public MainPage updateFields(String token, Map<String, String> updates) {
         MainPage main = getByToken(token);
 
-        switch (fieldName) {
-            case "password" -> main.setPassword(value);
-            case "nameEn" -> main.setNameEn(value);
-            case "nameRu" -> main.setNameRu(value);
-            case "nameHy" -> main.setNameHy(value);
-            case "logo" -> main.setLogo(value);
-            case "backgroundImageUrl" -> main.setBackgroundImageUrl(value);
-            case "slogan_positionEn" -> main.setSlogan_positionEn(value);
-            case "slogan_positionHy" -> main.setSlogan_positionHy(value);
-            case "slogan_positionRu" -> main.setSlogan_positionRu(value);
-            case "iconBackgroundColor" -> main.setIconBackgroundColor(value);
-            case "logoBackgroundColor" -> main.setLogoBackgroundColor(value);
-            case "nameColor" -> main.setNameColor(value);
-            case "slogan_positionColor" -> main.setSlogan_positionColor(value);
-            case "buttonsColor" -> main.setButtonsColor(value);
-            case "addContactColor" -> main.setAddContactColor(value);
-            case "languageColor" -> main.setLanguageColor(value);
-            default -> throw new IllegalArgumentException("Unknown field: " + fieldName);
+        for (Map.Entry<String, String> entry : updates.entrySet()) {
+            String fieldName = entry.getKey();
+            String value = entry.getValue();
+            switch (fieldName) {
+                case "password" -> main.setPassword(value);
+                case "nameEn" -> main.setName(value);
+                case "logo" -> main.setLogo(value);
+                case "backgroundImageUrl" -> main.setBackgroundImageUrl(value);
+                case "slogan_positionEn" -> main.setSlogan_positionEn(value);
+                case "slogan_positionHy" -> main.setSlogan_positionHy(value);
+                case "slogan_positionRu" -> main.setSlogan_positionRu(value);
+                case "iconBackgroundColor" -> main.setIconBackgroundColor(value);
+                case "logoBackgroundColor" -> main.setLogoBackgroundColor(value);
+                case "nameColor" -> main.setNameColor(value);
+                case "slogan_positionColor" -> main.setSlogan_positionColor(value);
+                case "buttonsColor" -> main.setButtonsColor(value);
+                case "addContactColor" -> main.setAddContactColor(value);
+                case "languageColor" -> main.setLanguageColor(value);
+                default -> throw new IllegalArgumentException("Unknown field: " + fieldName);
+            }
         }
-
         return mainRepository.save(main);
     }
 
@@ -67,9 +69,7 @@ public class MainService {
         Design design = new Design();
         design.setMainPage(page);
         design.setPassword(page.getPassword());
-        design.setNameEn(page.getNameEn());
-        design.setNameRu(page.getNameRu());
-        design.setNameHy(page.getNameHy());
+        design.setNameEn(page.getName());
         design.setLogo(page.getLogo());
         design.setBackgroundImageUrl(page.getBackgroundImageUrl());
         design.setSlogan_positionEn(page.getSlogan_positionEn());
