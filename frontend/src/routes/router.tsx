@@ -4,12 +4,10 @@ import {
     CARD_PATH, 
     LOGIN_PATH, 
     ABOUT_PATH, 
-    ORDER_PATH,
     PARTNERS_PATH, 
     ADMIN_HOME_PATH,
     ADMIN_CONTACTS_PATH, 
     ADMIN_SPONSORS_PATH, 
-    ADMIN_APPOINTMENTS_PATH, 
     ADMIN_STATISTICS_PATH,
     ADMIN_PATH,
 } from "../consts/paths";
@@ -18,14 +16,12 @@ import VisitCard from "../components/VisitCard";
 import { LoginLayout } from "../layouts/LoginLayout";
 import { LoginPage } from "../pages/LoginPage";
 import { AboutCardsPage } from "../pages/AboutCardsPage";
-import { OrderPage } from "../pages/OrderPage";
 import { PartnersPage } from "../pages/PartnersPage";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { AdminLayout } from "../layouts/AdminLayout";
 import { HomePage } from "../pages/HomePage";
 import { ContactsPage } from "../pages/ContactsPage";
 import { SponsorsPage } from "../pages/SponsorsPage";
-import { AppointmentPage } from "../pages/AppointmentPage";
 import { StatisticsPage } from "../pages/StatisticsPage";
 
 
@@ -57,10 +53,6 @@ export const router = createBrowserRouter([
         element: <AboutCardsPage />
       },
       {
-        path: ORDER_PATH,
-        element: <OrderPage />
-      },
-      {
         path: PARTNERS_PATH,
         element: <PartnersPage />
       },
@@ -86,10 +78,6 @@ export const router = createBrowserRouter([
       {
         path: ADMIN_SPONSORS_PATH,
         element: <SponsorsPage />
-      },
-      {
-        path: ADMIN_APPOINTMENTS_PATH,
-        element: <AppointmentPage />
       },
       {
         path: ADMIN_STATISTICS_PATH,

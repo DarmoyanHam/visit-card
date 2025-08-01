@@ -4,14 +4,12 @@ import {
   ADMIN_HOME_PATH,
   ADMIN_CONTACTS_PATH,
   ADMIN_SPONSORS_PATH,
-  ADMIN_APPOINTMENTS_PATH,
   ADMIN_STATISTICS_PATH,
 } from "../consts/paths";
 import {
   HomeOutlined,
   ContactsOutlined,
   TeamOutlined,
-  CalendarOutlined,
   BarChartOutlined,
   MenuOutlined,
 } from "@ant-design/icons";
@@ -37,11 +35,6 @@ const items = [
     key: ADMIN_SPONSORS_PATH,
     label: <NavLink to={ADMIN_SPONSORS_PATH}>Sponsors</NavLink>,
     icon: <TeamOutlined />,
-  },
-  {
-    key: ADMIN_APPOINTMENTS_PATH,
-    label: <NavLink to={ADMIN_APPOINTMENTS_PATH}>Appointments</NavLink>,
-    icon: <CalendarOutlined />,
   },
   {
     key: ADMIN_STATISTICS_PATH,

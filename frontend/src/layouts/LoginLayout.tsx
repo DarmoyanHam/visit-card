@@ -1,8 +1,7 @@
 import { Outlet, NavLink } from "react-router-dom";
-import { Divider, Layout, Menu, Typography, Drawer, Button, Grid } from "antd";
+import { Divider, Layout, Menu, Drawer, Button, Grid } from "antd";
 import {
   ABOUT_PATH,
-  ORDER_PATH,
   PARTNERS_PATH,
   LOGIN_PATH
 } from "../consts/paths";
@@ -11,14 +10,12 @@ import { ContactUs } from "../components/ContactUsContainer";
 import {
   FileTextOutlined,
   FormOutlined,
-  ShoppingOutlined,
   TeamOutlined,
   MenuOutlined
 } from "@ant-design/icons";
 import { useState } from "react";
 
 const { Header, Content, Footer } = Layout;
-const { Paragraph } = Typography;
 const { useBreakpoint } = Grid;
 
 const items = [
@@ -33,11 +30,6 @@ const items = [
     icon: <FileTextOutlined />
   },
   {
-    key: `/${ORDER_PATH}`,
-    label: <NavLink to={`/${ORDER_PATH}`}>To Order</NavLink>,
-    icon: <ShoppingOutlined />
-  },
-  {
     key: `/${PARTNERS_PATH}`,
     label: <NavLink to={`/${PARTNERS_PATH}`}>Partners</NavLink>,
     icon: <TeamOutlined />
@@ -47,59 +39,99 @@ const items = [
 export const LoginLayout = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const screens = useBreakpoint();
-
   const isMobile = !screens.md;
 
   return (
-    <Layout style={{ minHeight: "100vh", backgroundColor: "#000526ff" }}>
-      <Header style={{ display: "flex", alignItems: "center", paddingInline: 16 }}>
-        <div style={{ display: "flex", alignItems: "center", color: "white", fontSize: 24, marginRight: 32 }}>
-          <img src={logo} alt="logo" style={{ height: 40, marginRight: 12 }} />
-        </div>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundImage: `url('/bg.png')`, // укажи свой путь
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <Layout style={{ minHeight: "100vh", backgroundColor: "transparent" }}>
+        <Header
+          style={{
+            display: "flex",
+            alignItems: "center",
+            paddingInline: 16,
+            backdropFilter: "blur(10px)",
+            backgroundColor: "rgba(0, 0, 0, 0.4)", // полупрозрачный
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", color: "white", fontSize: 24, marginRight: 32 }}>
+            <img src={logo} alt="logo" style={{ height: 40, marginRight: 12 }} />
+          </div>
 
-        {isMobile ? (
-          <>
-            <Button
-              type="text"
-              icon={<MenuOutlined style={{ color: "white", fontSize: 20 }} />}
-              onClick={() => setDrawerVisible(true)}
-              style={{ marginLeft: "auto" }}
-            />
-            <Drawer
-              title="Menu"
-              placement="right"
-              onClose={() => setDrawerVisible(false)}
-              open={drawerVisible}
-              styles={{ body: { padding: 20, background: "#001529" } }}
-            >
-              <Menu
-                theme="dark"
-                mode="vertical"
-                items={items}
-                onClick={() => setDrawerVisible(false)}
+          {isMobile ? (
+            <>
+              <Button
+                type="text"
+                icon={<MenuOutlined style={{ color: "white", fontSize: 20 }} />}
+                onClick={() => setDrawerVisible(true)}
+                style={{ marginLeft: "auto" }}
               />
-            </Drawer>
-          </>
-        ) : (
-          <Menu
-            theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={[`/${LOGIN_PATH}`]}
-            style={{ flex: 1 }}
-            items={items}
-          />
-        )}
-      </Header>
+              <Drawer
+                title="Menu"
+                placement="right"
+                onClose={() => setDrawerVisible(false)}
+                open={drawerVisible}
+                styles={{
+                  body: {
+                    padding: 20,
+                    background: "rgba(0,0,0,0.7)",
+                    color: "white",
+                  },
+                }}
+              >
+                <Menu
+                  theme="dark"
+                  mode="vertical"
+                  items={items}
+                  onClick={() => setDrawerVisible(false)}
+                />
+              </Drawer>
+            </>
+          ) : (
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              defaultSelectedKeys={[`/${LOGIN_PATH}`]}
+              style={{ flex: 1, background: "transparent" }}
+              items={items}
+            />
+          )}
+        </Header>
 
-      <Content style={{ padding: "24px 50px" }}>
-        <Outlet />
-      </Content>
+        <Content style={{ padding: "24px 50px" }}>
+          <div
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              padding: "24px",
+              borderRadius: "12px",
+              color: "white",
+              minHeight: "calc(100vh - 64px - 120px)", // учесть header и footer
+            }}
+          >
+            <Outlet />
+          </div>
+        </Content>
 
-      <Divider style={{ borderColor: "white", color: "white" }} />
+        <Divider style={{ borderColor: "white", color: "white" }} />
 
-      <Footer style={{ textAlign: "center", background: "#000526ff" }}>
-        <ContactUs />
-      </Footer>
-    </Layout>
+        <Footer
+          style={{
+            textAlign: "center",
+            backdropFilter: "blur(10px)",
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            color: "white"
+          }}
+        >
+          <ContactUs />
+        </Footer>
+      </Layout>
+    </div>
   );
 };
