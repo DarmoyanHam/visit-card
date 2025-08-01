@@ -1,9 +1,11 @@
-import { Button, Card, Form, Input, message, Typography, Row, Col } from "antd";
+import { Button, Card, Form, Input, message, Typography, Row, Col, Dropdown, Space } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { ADMIN_HOME_PATH, ADMIN_PATH } from "../consts/paths";
 import logo from "../assets/l4_vc_logo.png";
 import "./cards.css";
+import { ShoppingOutlined, DownOutlined  } from "@ant-design/icons";
+import "../index.css";
 
 const { Title, Paragraph } = Typography;
 
@@ -11,6 +13,23 @@ type LoginForm = {
   login: string;
   password: string;
 };
+
+const orderLinks = [
+  { label: "Instagram", link: "https://www.instagram.com/l4.vcard/" },
+  { label: "Facebook", link: "https://www.facebook.com/L4VisitCard" },
+  { label: "WhatsApp", link: "https://api.whatsapp.com/send/?phone=37433220094" },
+  { label: "Telegram", link: "https://t.me/L4vcard" },
+];
+
+const dropdownItems = orderLinks.map((item) => ({
+  key: item.label,
+  label: (
+    <a href={item.link} target="_blank" rel="noopener noreferrer">
+      {item.label}
+    </a>
+  ),
+}));
+
 
 export const LoginContainer = () => {
   const navigate = useNavigate();
@@ -22,7 +41,7 @@ export const LoginContainer = () => {
     console.log(JSON.stringify(values));
 
     try {
-      const response = await fetch("http://192.168.18.6:8080/api/auth/login", {
+      const response = await fetch("http://172.20.10.2:8080/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,7 +70,6 @@ export const LoginContainer = () => {
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: "#000526ff",
         padding: "20px",
       }}
     >
@@ -59,7 +77,7 @@ export const LoginContainer = () => {
         gutter={[32, 32]}
         justify="center"
         align="middle"
-        style={{ minHeight: "100vh", backgroundColor: "#000526ff", padding: "20px" }}
+        style={{ minHeight: "100vh", padding: "20px" }}
       >
         <Col
           xs={24}
@@ -85,9 +103,20 @@ export const LoginContainer = () => {
             New opportunities for your business. Order your digital business
             card now.
           </Paragraph>
-          <Button size="large">
-            Order
-          </Button>
+          <Dropdown
+            menu={{ items: dropdownItems }}
+            trigger={["hover"]}
+            placement="bottom"
+            overlayClassName="custom-dropdown"
+          >
+            <Button size="large">
+              <Space>
+                <ShoppingOutlined />
+                Order
+                <DownOutlined />
+              </Space>
+            </Button>
+          </Dropdown>
         </Col>
 
         <Col

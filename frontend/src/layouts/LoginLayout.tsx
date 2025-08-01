@@ -2,7 +2,6 @@ import { Outlet, NavLink } from "react-router-dom";
 import { Divider, Layout, Menu, Typography, Drawer, Button, Grid } from "antd";
 import {
   ABOUT_PATH,
-  ORDER_PATH,
   PARTNERS_PATH,
   LOGIN_PATH
 } from "../consts/paths";
@@ -11,14 +10,12 @@ import { ContactUs } from "../components/ContactUsContainer";
 import {
   FileTextOutlined,
   FormOutlined,
-  ShoppingOutlined,
   TeamOutlined,
   MenuOutlined
 } from "@ant-design/icons";
 import { useState } from "react";
 
 const { Header, Content, Footer } = Layout;
-const { Paragraph } = Typography;
 const { useBreakpoint } = Grid;
 
 const items = [
@@ -31,11 +28,6 @@ const items = [
     key: `/${ABOUT_PATH}`,
     label: <NavLink to={`/${ABOUT_PATH}`}>About Card</NavLink>,
     icon: <FileTextOutlined />
-  },
-  {
-    key: `/${ORDER_PATH}`,
-    label: <NavLink to={`/${ORDER_PATH}`}>To Order</NavLink>,
-    icon: <ShoppingOutlined />
   },
   {
     key: `/${PARTNERS_PATH}`,

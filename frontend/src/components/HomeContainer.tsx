@@ -28,7 +28,7 @@ export const HomeContainer = () => {
 
 
   useEffect(() => {
-      fetch(`http://192.168.18.6:8080/api/main/token`, {
+      fetch(`http://172.20.10.2:8080/api/main/token`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -102,15 +102,7 @@ export const HomeContainer = () => {
               <Input placeholder="Input login"/>
             </Form.Item>
 
-            <Form.Item label={<span style={{ color: "white" }}>Name(Armenian)</span>} name="nameHy">
-              <Input placeholder="Անուն"/>
-            </Form.Item>
-
-            <Form.Item label={<span style={{ color: "white" }}>Name(Russian)</span>} name="nameRu">
-              <Input placeholder="Имя"/>
-            </Form.Item>
-
-            <Form.Item label={<span style={{ color: "white" }}>Name(English)</span>} name="nameEn">
+            <Form.Item label={<span style={{ color: "white" }}>Name</span>} name="name">
               <Input placeholder="Name"/>
             </Form.Item>
 

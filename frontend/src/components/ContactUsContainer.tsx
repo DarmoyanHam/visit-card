@@ -4,18 +4,19 @@ import viber from "../assets/icons/viber.svg";
 import facebook from "../assets/icons/facebook.svg";
 import instagram from "../assets/icons/instagram.svg";
 import telegram from "../assets/icons/telegram.svg";
-import tiktok from "../assets/icons/tiktok.svg";
+import email from "../assets/icons/image.png";
 import "./cards.css";
+
 
 const { Title, Paragraph } = Typography;
 
 const contacts = [
-    {label: "whatsApp", icon: whatsapp, link: "https://api.whatsapp.com/send/?phone=37433220094&text&type=phone_number&app_absent=0"},
-    {label: "Viber", icon: viber, link: "viber://add?number=37433220094"},
-    {label: "Facebook", icon: facebook, link: "https://www.facebook.com/L4VisitCard"},
-    {label: "Instagram", icon: instagram, link: "https://www.instagram.com/l4.vcard/?igsh=bjV5NGh6dWdoeTdh&utm_source=qr#"},
     {label: "Telegram", icon: telegram, link: "https://t.me/L4vcard"},
-    {label: "Tiktok", icon: tiktok, link: "https://www.tiktok.com/@l4.vcard?_t=8mP8sQJO958&_r=1"},
+    {label: "whatsApp", icon: whatsapp, link: "https://api.whatsapp.com/send/?phone=37433220094&text&type=phone_number&app_absent=0"},
+    {label: "Instagram", icon: instagram, link: "https://www.instagram.com/l4.vcard/?igsh=bjV5NGh6dWdoeTdh&utm_source=qr#"},
+    {label: "Facebook", icon: facebook, link: "https://www.facebook.com/L4VisitCard"},
+    {label: "Viber", icon: viber, link: "viber://add?number=37433220094"},
+    {label: "Email", icon: email, link: "https://mail.google.com/mail/?view=cm&fs=1&to=darmoyanham@gmail.com"},
 ];
 
 export const ContactUs = () => {

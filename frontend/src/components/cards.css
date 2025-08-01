@@ -121,3 +121,16 @@
   background-color: #313346ff !important;
   border-top: 1px solid #5a5b70;
 }
+
+.custom-dropdown .ant-dropdown-menu {
+  background-color: #313346; 
+}
+
+.custom-dropdown .ant-dropdown-menu-item {
+  color: white !important;         
+}
+
+.custom-dropdown .ant-dropdown-menu-item:hover {
+  background-color: #4b4d66;  
+  color: white;              
+}
