@@ -4,6 +4,7 @@ import com.visitcard.dto.DesignDto;
 import com.visitcard.entity.Design;
 import com.visitcard.entity.MainPage;
 import com.visitcard.repository.DesignRepository;
+import com.visitcard.security.JwtTokenProvider;
 import com.visitcard.service.MainService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class MainController {
     private DesignRepository designRepository;
     @Autowired
     private MainService mainService;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     public MainController(MainService mainService) {
         this.mainService = mainService;
@@ -46,12 +49,21 @@ public class MainController {
     }
 
 
-    @PatchMapping("/{token}/fields")
+    @PatchMapping("/fields")
     public ResponseEntity<?> updateFields(
-            @PathVariable String token,
-            @RequestBody Map<String, String> updates) {
+            @RequestBody Map<String, String> updates,
+            HttpServletRequest request) {
+        System.out.println("PATCH /fields called");
+        String authHeader = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + authHeader);
         try {
-            MainPage updated = mainService.updateFields(token, updates);
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid Authorization header");
+            }
+            String token = authHeader.substring(7);
+            String username = jwtTokenProvider.getUsernameFromToken(token);
+            System.out.println("Extracted username: " + username);
+            MainPage updated = mainService.updateFieldsByUsername(username, updates);
             return ResponseEntity.ok(updated);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
