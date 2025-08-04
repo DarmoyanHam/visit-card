@@ -1,5 +1,5 @@
 import { Table, Input, Checkbox, Button, Card, Row, Col, Typography, Form } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ColumnsType } from "antd/es/table";
 import "./ContactTable.css";
 
@@ -34,9 +34,92 @@ const { Title } = Typography;
 //   { key: "19", label: "Snapchat", value: "", enabled: false },
 // ];
 
+
+
 export const ContactTable = () => {
   // const [data, setData] = useState(initialData);
   const [form] = Form.useForm();
+  const [initialValues, setInitialValues] = useState<Record<string, any>>({});
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+        fetch(`http://192.168.18.6:8080/api/contact/by-token`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+          }
+        })
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch MainPage data");
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          const vals = {
+            tel: data.tel || "",
+            mail: data.mail || "",
+            sms: data.sms || "",
+            website: data.website || "",
+            location: data.location || "",
+            whatsapp: data.whatsapp || "",
+            linkedin: data.linkedin,
+            viber: data.viber,
+            telegram: data.telegram,
+            facebook: data.facebook,
+            messenger: data.messenger,
+            instagram: data.instagram,
+            tiktok: data.tiktok,
+            youtube: data.youtube,
+            twitter: data.twitter,
+            vk: data.vk,
+            snapchat: data.snapchat,
+          };
+          form.setFieldsValue(vals);
+          setInitialValues(vals);
+        })
+        .catch((error) => {
+          console.error("Ошибка при загрузке данных:", error);
+        });
+    }, []);
+
+  const onFinish = (values: any) => {
+      if (!token) {
+        console.error("Token not found.");
+        return;
+      }
+
+      const updates: Record<string, string> = {};
+      for (const key in values) {
+        const newValue = values[key];
+        const oldValue = initialValues[key];
+
+        if (newValue !== undefined && newValue !== oldValue) {
+          updates[key] = String(newValue);
+        }
+      }
+
+      console.log(updates);
+
+      fetch("http://192.168.18.6:8080/api/contact/by-token/fields", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token,
+        },
+        body: JSON.stringify(updates),
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to update fields");
+          return res.json();
+        })
+        .then((data) => {
+          console.log("Данные успешно сохранены:", data);
+        })
+        .catch((error) => {
+          console.error("Ошибка при обновлении данных:", error);
+      });
+    };
 
   // const handleCheckboxChange = (key: string, checked: boolean) => {
   //   setData(prev =>
@@ -93,7 +176,7 @@ export const ContactTable = () => {
             </Title>
           </Col>
           <Col>
-            <Button >Save</Button>
+            <Button onClick={() => form.submit()}>Save</Button>
           </Col>
         </Row>
       }
@@ -109,7 +192,7 @@ export const ContactTable = () => {
       <Form
           layout="vertical"
           form={form}
-          onFinish={() => {}}
+          onFinish={onFinish}
           initialValues={{ sloganBold: true, feedback: true }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
