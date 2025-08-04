@@ -112,14 +112,13 @@ export const LoginLayout = () => {
               padding: "24px",
               borderRadius: "12px",
               color: "white",
-              minHeight: "calc(100vh - 64px - 120px)", // учесть header и footer
+              minHeight: "calc(100vh - 64px - 120px)", 
             }}
           >
             <Outlet />
           </div>
         </Content>
 
-        <Divider style={{ borderColor: "white", color: "white" }} />
 
         <Footer
           style={{
@@ -129,6 +128,7 @@ export const LoginLayout = () => {
             color: "white"
           }}
         >
+          <Divider style={{ borderColor: "white", color: "white" }} />
           <ContactUs />
         </Footer>
       </Layout>
