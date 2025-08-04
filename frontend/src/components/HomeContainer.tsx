@@ -22,12 +22,12 @@ const { Title } = Typography;
 
 export const HomeContainer = () => {
     const [form] = Form.useForm();
-    const [initialValues, setInitialValues] = useState<Record<string, any>>({});
+    const [initialValues, setInitialValues] = useState<Record<string, string>>({});
     
 
     const token = localStorage.getItem("token");
 
-    const onFinish = (values: any) => {
+    const onFinish = (values: Record<string, string>) => {
       if (!token) {
         console.error("Token not found.");
         return;
