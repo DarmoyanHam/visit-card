@@ -36,7 +36,7 @@ const { Title } = Typography;
 
 export const ContactTable = () => {
   // const [data, setData] = useState(initialData);
-  // const [form] = Form.useForm();
+  const [form] = Form.useForm();
 
   // const handleCheckboxChange = (key: string, checked: boolean) => {
   //   setData(prev =>
