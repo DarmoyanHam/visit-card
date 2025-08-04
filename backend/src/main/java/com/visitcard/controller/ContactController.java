@@ -23,8 +23,9 @@ public class ContactController {
     }
 
     @GetMapping("/by-token")
-    public ResponseEntity<?> getContactByLogin(@RequestParam String token) {
+    public ResponseEntity<?> getContactByToken(@RequestHeader("Authorization") String authorizationHeader) {
         try {
+            String token = authorizationHeader.replace("Bearer ", "");
             Contact contact = contactService.getByToken(token);
             return ResponseEntity.ok(contact);
         } catch (RuntimeException e) {
