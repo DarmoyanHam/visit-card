@@ -2,15 +2,15 @@ import {
   Card, 
   Form, 
   Input, 
-  Checkbox, 
+  // Checkbox, 
   Typography, 
   Button, 
-  Upload, 
-  ColorPicker, 
+  // Upload, 
+  // ColorPicker, 
   Row, 
   Col 
 } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+//import { UploadOutlined } from "@ant-design/icons";
 import { 
   useState, 
   useEffect 
@@ -21,48 +21,95 @@ const { TextArea } = Input;
 const { Title } = Typography;
 
 export const HomeContainer = () => {
-  const [form] = Form.useForm();
-  const [color, setColor] = useState("#FFFFF000526ff");
+    const [form] = Form.useForm();
+    const [initialValues, setInitialValues] = useState<Record<string, any>>({});
+    
 
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
+
+    const onFinish = (values: any) => {
+      if (!token) {
+        console.error("Token not found.");
+        return;
+      }
+
+      const allowedKeys = [
+        "slogan_positionHy",
+        "slogan_positionRu",
+        "slogan_positionEn",
+        "name"
+      ];
+
+      const updates: Record<string, string> = {};
+      for (const key of allowedKeys) {
+        const newValue = values[key];
+        const oldValue = initialValues[key];
+
+        if (newValue !== undefined && newValue !== oldValue) {
+          updates[key] = String(newValue);
+        }
+      }
 
 
-  useEffect(() => {
-      fetch(`http://172.20.10.2:8080/api/main/token`, {
-        method: "GET",
+      fetch("http://192.168.18.6:8080/api/main/fields", {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer " + token,
-        }
+        },
+        body: JSON.stringify(updates),
       })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch MainPage data");
-        return res.json();
-      })
-      .then((data) => {
-        form.setFieldsValue({
-          password: data.password || "",
-          login: data.login || "",
-          nameHy: data.nameHy || "",
-          nameRu: data.nameRu || "",
-          nameEn: data.nameEn || "",
-          sloganHy: data.sloganHy || "",
-          sloganRu: data.sloganRu || "",
-          sloganEn: data.sloganEn || "",
-          nameColor: data.nameColor,
-          logoBgColor: data.logoBgColor,
-          sloganColor: data.sloganColor,
-          iconColor: data.iconColor,
-          iconBgColor: data.iconBgColor,
-          buttonColor: data.buttonColor,
-          addToContactColor: data.addToContactColor,
-          langBtnColor: data.langBtnColor,
-        });
-      })
-      .catch((error) => {
-        console.error("Ошибка при загрузке данных:", error);
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to update fields");
+          return res.json();
+        })
+        .then((data) => {
+          console.log("Данные успешно сохранены:", data);
+        })
+        .catch((error) => {
+          console.error("Ошибка при обновлении данных:", error);
       });
-  }, []);
+    };
+
+
+
+    useEffect(() => {
+        fetch(`http://192.168.18.6:8080/api/main/token`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+          }
+        })
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch MainPage data");
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          const vals = {
+            password: data.password || "",
+            login: data.login || "",
+            name: data.name || "",
+            slogan_positionHy: data.slogan_positionHy || "",
+            slogan_positionRu: data.slogan_positionRu || "",
+            slogan_positionEn: data.slogan_positionEn || "",
+            // nameColor: data.nameColor,
+            // logoBgColor: data.logoBgColor,
+            // sloganColor: data.sloganColor,
+            // iconColor: data.iconColor,
+            // iconBgColor: data.iconBgColor,
+            // buttonColor: data.buttonColor,
+            // addToContactColor: data.addToContactColor,
+            // langBtnColor: data.langBtnColor,
+          };
+          form.setFieldsValue(vals);
+          setInitialValues(vals);
+        })
+        .catch((error) => {
+          console.error("Ошибка при загрузке данных:", error);
+        });
+    }, []);
 
   return (
     <div className="max-w-4xl mx-auto py-10">
@@ -75,7 +122,7 @@ export const HomeContainer = () => {
               </Title>
             </Col>
             <Col>
-              <Button >Save</Button>
+              <Button onClick={() => form.submit()}>Save</Button>
             </Col>
           </Row>
         }
@@ -90,7 +137,7 @@ export const HomeContainer = () => {
         <Form
           layout="vertical"
           form={form}
-          onFinish={() => {}}
+          onFinish={onFinish}
           initialValues={{ sloganBold: true, feedback: true }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -106,64 +153,64 @@ export const HomeContainer = () => {
               <Input placeholder="Name"/>
             </Form.Item>
 
-            <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(Armenian)</span>} name="sloganHy">
+            <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(Armenian)</span>} name="slogan_positionHy">
               <TextArea rows={2} />
             </Form.Item>
 
-            <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(Russian)</span>} name="sloganRu">
+            <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(Russian)</span>} name="slogan_positionRu">
               <TextArea rows={2} />
             </Form.Item>
 
-            <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(English)</span>} name="sloganEn">
+            <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(English)</span>} name="slogan_positionEn">
               <TextArea rows={2} />
             </Form.Item>
 
-            <Row gutter={[16, 16]}>
+{/* {            <Row gutter={[16, 16]}>
               <Col xs={24} sm={12} md={8} lg={6}>
                 <Form.Item label={<span style={{ color: "white" }}>Name color</span>} name="nameColor">
-                  <ColorPicker value={color} />
+                  <ColorPicker/>
                 </Form.Item>
               </Col>
 
               <Col xs={24} sm={12} md={8} lg={6}>
                 <Form.Item label={<span style={{ color: "white" }}>Logo background color</span>} name="logoBgColor">
-                  <ColorPicker value={color} />
+                  <ColorPicker/>
                 </Form.Item>
               </Col>
 
               <Col xs={24} sm={12} md={8} lg={6}>
                 <Form.Item label={<span style={{ color: "white" }}>Slogan/position color</span>} name="sloganColor">
-                  <ColorPicker value={color} />
+                  <ColorPicker/>
                 </Form.Item>
               </Col>
 
               <Col xs={24} sm={12} md={8} lg={6}>
                 <Form.Item label={<span style={{ color: "white" }}>Icon color</span>} name="iconColor">
-                  <ColorPicker value={color} />
+                  <ColorPicker/>
                 </Form.Item>
               </Col>
 
               <Col xs={24} sm={12} md={8} lg={6}>
                 <Form.Item label={<span style={{ color: "white" }}>Icon background color</span>} name="iconBgColor">
-                  <ColorPicker value={color} />
+                  <ColorPicker/>
                 </Form.Item>
               </Col>
 
               <Col xs={24} sm={12} md={8} lg={6}>
                 <Form.Item label={<span style={{ color: "white" }}>Button name color</span>} name="buttonColor">
-                  <ColorPicker value={color} />
+                  <ColorPicker/>
                 </Form.Item>
               </Col>
 
               <Col xs={24} sm={12} md={8} lg={6}>
                 <Form.Item label={<span style={{ color: "white" }}>"Add to contacts" button color</span>} name="addToContactColor">
-                  <ColorPicker value={color} />
+                  <ColorPicker/>
                 </Form.Item>
               </Col>
 
               <Col xs={24} sm={12} md={8} lg={6}>
                 <Form.Item label={<span style={{ color: "white" }}>Language button color</span>} name="langBtnColor">
-                  <ColorPicker value={color} />
+                  <ColorPicker/>
                 </Form.Item>
               </Col>
             </Row>
@@ -187,11 +234,11 @@ export const HomeContainer = () => {
               </Upload>
             </Form.Item>
 
-            <Form.Item label={<span style={{ color: "white" }}>Background picture</span>} name="logo">
+            <Form.Item label={<span style={{ color: "white" }}>Background picture</span>} name="background">
               <Upload listType="picture" maxCount={1} beforeUpload={() => false}>
                 <Button icon={<UploadOutlined />}>Upload</Button>
               </Upload>
-            </Form.Item>
+            </Form.Item>} */}
           </div>
         </Form>
       </Card>

@@ -41,7 +41,7 @@ export const LoginContainer = () => {
     console.log(JSON.stringify(values));
 
     try {
-      const response = await fetch("http://172.20.10.2:8080/api/auth/login", {
+      const response = await fetch("http://192.168.18.6:8080/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

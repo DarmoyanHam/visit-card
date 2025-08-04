@@ -68,15 +68,31 @@
 .ant-input-affix-wrapper,
 .ant-input-textarea {
   background-color: #43445a !important;
-  color: white;
-  border: 1px solid #5a5b70;
+  color: white !important;
+  border: 1px solid #5a5b70 !important;
 }
 
 .ant-input::placeholder,
 .ant-input-password input::placeholder,
 .ant-input-textarea::placeholder {
-  color: #b0b0b0;
+  color: #b0b0b0 !important;
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  background-color: #43445a !important;
+  -webkit-box-shadow: 0 0 0px 1000px #43445a inset !important;
+  box-shadow: 0 0 0px 1000px #43445a inset !important;
+  -webkit-text-fill-color: white !important; /* ← вот это ключевое */
+  color: white !important;
+  border: 1px solid #5a5b70 !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
 
 .ant-btn {
   background-color: #43445a;
