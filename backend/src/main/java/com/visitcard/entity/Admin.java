@@ -35,6 +35,9 @@ public class Admin {
     @JsonIgnore
     private Contact contact;
 
+    @Column(name = "token")
+    private String token;
+
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Producers> producers;

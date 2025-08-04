@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/producers")
@@ -20,10 +21,11 @@ public class ProducerController {
         return producerService.getAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Producers> getById(@PathVariable Long id) {
+    @GetMapping("/by-login")
+    public ResponseEntity<?> getByLogin(@RequestParam String login) {
         try {
-            return ResponseEntity.ok(producerService.getById(id));
+            List<Producers> producers = producerService.getByLogin(login);
+            return ResponseEntity.ok(producers);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
@@ -40,13 +42,12 @@ public class ProducerController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/by-name/field")
-    public ResponseEntity<?> updateFieldByName(
+    @PatchMapping("/by-name/fields")
+    public ResponseEntity<?> updateFieldsByName(
             @RequestParam String name,
-            @RequestParam String fieldName,
-            @RequestParam String value) {
+            @RequestBody Map<String, String> updates) {
         try {
-            Producers updated = producerService.updateFieldByName(name, fieldName, value);
+            Producers updated = producerService.updateFieldsByName(name, updates);
             return ResponseEntity.ok(updated);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

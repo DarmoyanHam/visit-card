@@ -1,7 +1,10 @@
 package com.visitcard.service;
 
+import com.visitcard.entity.Admin;
+import com.visitcard.entity.Contact;
 import com.visitcard.entity.Design;
 import com.visitcard.entity.MainPage;
+import com.visitcard.repository.AdminRepository;
 import com.visitcard.repository.DesignRepository;
 import com.visitcard.repository.MainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,8 @@ public class MainService {
     private final MainRepository mainRepository;
     @Autowired
     private DesignRepository designRepository;
+    @Autowired
+    private AdminRepository adminRepository;
 
     @Autowired
     public MainService(MainRepository mainRepository) {
@@ -27,8 +32,12 @@ public class MainService {
     }
 
     public MainPage getByToken(String token) {
-        return mainRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("MainPage not found"));
+        Admin admin = adminRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
+
+        MainPage mainPage = admin.getMainPage();
+        if (mainPage == null) throw new RuntimeException("Contact not found");
+        return mainPage;
     }
 
     public MainPage save(MainPage mainPage) {
@@ -36,37 +45,42 @@ public class MainService {
     }
 
 
-    public MainPage updateFields(String token, Map<String, String> updates) {
-        MainPage main = getByToken(token);
+    public MainPage updateFieldsByUsername(String username, Map<String, String> updates) {
+        Admin admin = adminRepository.findByLogin(username)
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
 
-        for (Map.Entry<String, String> entry : updates.entrySet()) {
-            String fieldName = entry.getKey();
-            String value = entry.getValue();
-            switch (fieldName) {
-                case "password" -> main.setPassword(value);
-                case "nameEn" -> main.setName(value);
-                case "logo" -> main.setLogo(value);
-                case "backgroundImageUrl" -> main.setBackgroundImageUrl(value);
-                case "slogan_positionEn" -> main.setSlogan_positionEn(value);
-                case "slogan_positionHy" -> main.setSlogan_positionHy(value);
-                case "slogan_positionRu" -> main.setSlogan_positionRu(value);
-                case "iconBackgroundColor" -> main.setIconBackgroundColor(value);
-                case "logoBackgroundColor" -> main.setLogoBackgroundColor(value);
-                case "nameColor" -> main.setNameColor(value);
-                case "slogan_positionColor" -> main.setSlogan_positionColor(value);
-                case "buttonsColor" -> main.setButtonsColor(value);
-                case "addContactColor" -> main.setAddContactColor(value);
-                case "languageColor" -> main.setLanguageColor(value);
-                default -> throw new IllegalArgumentException("Unknown field: " + fieldName);
+        MainPage mainPage = mainRepository.findByAdmin(admin)
+                .orElseThrow(() -> new RuntimeException("MainPage not found"));
+
+        updates.forEach((field, value) -> {
+            switch (field) {
+                case "name" -> mainPage.setName(value);
+                case "backgroundImageUrl" -> mainPage.setBackgroundImageUrl(value);
+                case "slogan_positionEn" -> mainPage.setSlogan_positionEn(value);
+                case "slogan_positionHy" -> mainPage.setSlogan_positionHy(value);
+                case "slogan_positionRu" -> mainPage.setSlogan_positionRu(value);
+                case "iconBackgroundColor" -> mainPage.setIconBackgroundColor(value);
+                case "logoBackgroundColor" -> mainPage.setLogoBackgroundColor(value);
+                case "nameColor" -> mainPage.setNameColor(value);
+                case "slogan_positionColor" -> mainPage.setSlogan_positionColor(value);
+                case "buttonsColor" -> mainPage.setButtonsColor(value);
+                case "addContactColor" -> mainPage.setAddContactColor(value);
+                case "languageColor" -> mainPage.setLanguageColor(value);
+                case "token" -> admin.setToken(value);
+                default -> throw new IllegalArgumentException("Unknown field: " + field);
             }
-        }
-        return mainRepository.save(main);
+        });
+
+        return mainRepository.save(mainPage);
     }
 
+
     public void saveNewDesign(String token) {
-        MainPage page = mainRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("MainPage not found"));
-        Design design = new Design();
+        Admin admin = adminRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
+
+        MainPage page = mainRepository.findByAdmin(admin)
+                .orElseThrow(() -> new RuntimeException("MainPage not found"));Design design = new Design();
         design.setMainPage(page);
         design.setPassword(page.getPassword());
         design.setNameEn(page.getName());

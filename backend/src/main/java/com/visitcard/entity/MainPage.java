@@ -65,8 +65,6 @@ public class MainPage {
     @Column(name = "language_color")
     private String languageColor;
 
-    @Column(name = "token")
-    private String token;
 
     @OneToMany(mappedBy = "mainPage", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

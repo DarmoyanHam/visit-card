@@ -4,8 +4,8 @@ import com.visitcard.entity.Contact;
 import com.visitcard.service.ContactService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/contact")
@@ -22,10 +22,11 @@ public class ContactController {
         return contactService.getAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Contact> getById(@PathVariable Long id) {
+    @GetMapping("/by-token")
+    public ResponseEntity<?> getContactByLogin(@RequestParam String token) {
         try {
-            return ResponseEntity.ok(contactService.getById(id));
+            Contact contact = contactService.getByToken(token);
+            return ResponseEntity.ok(contact);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
@@ -42,13 +43,13 @@ public class ContactController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/field")
-    public ResponseEntity<?> updateField(
-            @PathVariable Long id,
-            @RequestParam String fieldName,
-            @RequestParam String value) {
+    @PatchMapping("/by-token/fields")
+    public ResponseEntity<?> updateByLogin(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody Map<String, String> updates) {
         try {
-            Contact updated = contactService.updateField(id, fieldName, value);
+            String token = authHeader.replace("Bearer ", "").trim();
+            Contact updated = contactService.updateFieldsByLogin(token, updates);
             return ResponseEntity.ok(updated);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
