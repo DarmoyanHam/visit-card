@@ -19,6 +19,7 @@ public class StaffService {
         Staff newStaff = null;
         newStaff.setName(staff.getName());
         newStaff.setPosition(staff.getPosition());
+        newStaff.setCompany(staff.getCompany());
         newStaff.setPhoneNumber(staff.getPhoneNumber());
         staffList.add(newStaff);
     }
