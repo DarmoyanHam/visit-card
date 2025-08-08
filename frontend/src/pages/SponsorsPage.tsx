@@ -1,5 +1,5 @@
-import { SponsorsTable } from "../components/SponsorsTable"
+import { CompanyContainer } from "../components/SponsorsTable"
 
 export const SponsorsPage = () => {
-    return <SponsorsTable />
+    return <CompanyContainer />
 }
