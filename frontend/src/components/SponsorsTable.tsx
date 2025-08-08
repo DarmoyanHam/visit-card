@@ -1,235 +1,129 @@
-import { 
-    Table, 
-    Input, 
-    Button, 
-    Upload,
-    Card, 
-    Row, 
-    Col, 
-    Typography, 
-    Image, 
-    Form, 
-    Modal, 
-    Affix 
-} from "antd";
-import { PlusCircleOutlined, UploadOutlined } from "@ant-design/icons";
-import { useState } from "react";
-import type { ColumnsType } from "antd/es/table";
+import { useEffect, useState } from "react";
+import { Card, Button, Modal, Row, Col, Space, Avatar } from "antd";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { CompanyForm } from "./CompanyForm";
 
-/*
-<Button onClick={() => setIsModalOpen(true)} style={{ marginBottom: 16 }} icon={<PlusCircleOutlined/> }>
-                Add Sponsor
-            </Button>
-*/
-
-const { Search } = Input;
-const { Title } = Typography;
-
-interface SponsorData {
-  key: string;
+interface StaffMember {
   name: string;
-  logo: string; 
-  link: string;
+  position: string;
+  phone?: string;
+  photo?: string; // теперь base64
 }
 
-const initialSponsors: SponsorData[] = [
-  { key: "1", name: "Sponsor A", logo: "", link: "" },
-  { key: "2", name: "BLBLBL", logo: "", link: "" },
-  { key: "3", name: "Sponsor C", logo: "", link: "" },
-];
+interface Company {
+  id: number;
+  name: string;
+  staff: StaffMember[];
+}
 
-export const SponsorsTable = () => {
-  const [data, setData] = useState<SponsorData[]>(initialSponsors);
-  const [initialData] = useState<SponsorData[]>(initialSponsors);
-  const [searchValue, setSearchValue] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form] = Form.useForm();
+export const CompanyContainer = () => {
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [editingCompany, setEditingCompany] = useState<Company | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const addSponsor = (values: { logo: string; link: string, name: string }) => {
-    const newSponsor: SponsorData = {
-      key: Date.now().toString(),
-      logo: values.logo,
-      link: values.link,
-      name: values.name,
-    };
-    setData((prev) => [...prev, newSponsor]);
-    setIsModalOpen(false);
-    form.resetFields();
+  useEffect(() => {
+    fetch("/api/companies")
+      .then((res) => res.json())
+      .then(setCompanies)
+      .catch((err) => console.error("Ошибка при загрузке компаний", err));
+  }, []);
+
+  const handleAdd = () => {
+    setEditingCompany(null);
+    setModalVisible(true);
   };
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchValue(value);
-
-    const filtered = initialData.filter(sponsor =>
-        sponsor.name.toLowerCase().includes(value.trim().toLowerCase())
-    );
-    setData(filtered);
-    };
-
-
-
-  const handleChange = (key: string, field: keyof SponsorData, value: string) => {
-    setData(prev =>
-      prev.map(item => (item.key === key ? { ...item, [field]: value } : item))
-    );
+  const handleEdit = (company: Company) => {
+    setEditingCompany(company);
+    setModalVisible(true);
   };
 
-  const deleteSponsor = (key: string) => {
-    setData((prev) => prev.filter((s) => s.key !== key));
+  const handleSave = async (company: Omit<Company, "id"> & { id?: number }) => {
+    if (company.id) {
+      const res = await fetch(`/api/companies/${company.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(company),
+      });
+
+      if (res.ok) {
+        setCompanies((prev) =>
+          prev.map((c) => (c.id === company.id ? { ...company, id: company.id! } : c))
+        );
+      }
+    } else {
+      const res = await fetch("/api/companies", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(company),
+      });
+
+      if (res.ok) {
+        const newCompany = await res.json();
+        setCompanies((prev) => [...prev, newCompany]);
+      }
+    }
+
+    setModalVisible(false);
+    setEditingCompany(null);
   };
 
-  const handleLogoUpload = (file: File, key: string) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const base64 = e.target?.result as string;
-      setData(prev =>
-        prev.map(item =>
-          item.key === key ? { ...item, logo: base64 } : item
-        )
-      );
-    };
-    reader.readAsDataURL(file);
-    return false; 
+  const handleDelete = async (id: number) => {
+    const res = await fetch(`/api/companies/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      setCompanies((prev) => prev.filter((c) => c.id !== id));
+    }
   };
-
-  const columns: ColumnsType<SponsorData> = [
-    {
-      title: "№",
-      render: (_: any, __: any, index: number) => index + 1,
-      width: 50,
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      render: (_: any, record: SponsorData) => (
-        <Input
-          value={record.name}
-          onChange={e => handleChange(record.key, "name", e.target.value)}
-        />
-      ),
-    },
-        {
-      title: "Link",
-      dataIndex: "link",
-      render: (_: any, record: SponsorData) => (
-        <Input
-          value={record.link}
-          onChange={e => handleChange(record.key, "link", e.target.value)}
-        />
-      ),
-    },
-    {
-      title: "Logo",
-      dataIndex: "logo",
-      render: (_: any, record: SponsorData) => (
-        <Upload
-          showUploadList={false}
-          beforeUpload={file => handleLogoUpload(file, record.key)}
-        >
-          {record.logo ? (
-            <Image
-              src={record.logo}
-              alt="logo"
-              width={40}
-              height={40}
-              style={{ objectFit: "cover", borderRadius: 4 }}
-              preview={false}
-            />
-          ) : (
-            <Button icon={<UploadOutlined />}>Upload</Button>
-          )}
-        </Upload>
-      ),
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_: any, record: SponsorData) => (
-        <Button onClick={() => deleteSponsor(record.key)}>
-          Delete
-        </Button>
-      ),
-    },
-  ];
 
   return (
-    <Card
-        title={
-            <Row justify="space-between" align="middle" wrap={false}>
-                <Col>
-                    <Title level={3} style={{ color: "white", margin: 0 }}>
-                        Sponsors
-                    </Title>
-                </Col>
-                <Col flex="auto" />
-                    <Col>
-                        <Row gutter={8} align="middle" wrap={false}>
-                            <Col>
-                                <Input
-                                    placeholder="Поиск спонсора"
-                                    value={searchValue}
-                                    onChange={handleSearchChange}
-                                />
-                            </Col>
-                            <Col>
-                                <Button>Save</Button>
-                            </Col>
-                        </Row>
-                    </Col>
-            </Row>
-        }
-      className="custom-table-wrapper"
-      style={{
-        backgroundColor: "#262835ff",
-        borderColor: "#313346ff",
-        borderWidth: 1,
-        borderStyle: "solid",
-      }}
-    >
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={false}
-        rowKey="key"
-        className="custom-dark-table"
-      />
+    <div>
+      <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+        Добавить компанию
+      </Button>
+
+      <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+        {companies.map((company) => (
+          <Col key={company.id} span={8}>
+            <Card
+              style={{ backgroundColor: "#1e1f25", color: "white" }}
+              headStyle={{ backgroundColor: "#1e1f25", color: "white" }}
+              bodyStyle={{ color: "white" }}
+              title={company.name}
+              extra={
+                <Space>
+                  <Button onClick={() => handleEdit(company)} icon={<EditOutlined />} />
+                  <Button onClick={() => handleDelete(company.id)} icon={<DeleteOutlined />} />
+                </Space>
+              }
+            >
+              <p><b>Сотрудников:</b> {company.staff.length}</p>
+              <ul style={{ paddingLeft: 0, listStyle: "none" }}>
+                {company.staff.map((member, index) => (
+                  <li key={index} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    {member.photo && (
+                      <Avatar src={member.photo} size={32} />
+                    )}
+                    <span>{member.position}: {member.name}</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+
       <Modal
-        title="Add New Sponsor"
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        onOk={() => form.submit()}
-        okText="Add"
+        open={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        footer={null}
+        width={900}
       >
-        <Form form={form} layout="vertical" onFinish={addSponsor}>
-          <Form.Item
-            name="name"
-            label={<span style={{ color: "white" }}>Sponsor name</span>}
-            rules={[{ required: true, message: "Please input Sponsor's name" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="logo"
-            label={<span style={{ color: "white" }}>Logo</span>}
-            rules={[{ required: true, message: "Please input logo URL" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="link"
-            label={<span style={{ color: "white" }}>Sponsor link</span>}
-            rules={[{ required: true, message: "Please input sponsor link" }]}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
+        <CompanyForm
+          initialData={editingCompany}
+          onSave={handleSave}
+          onCancel={() => setModalVisible(false)}
+        />
       </Modal>
-      <Affix offsetBottom={10}>
-        <Button onClick={() => setIsModalOpen(true)} style={{ marginBottom: 16 }} icon={<PlusCircleOutlined/> }>
-            Add Sponsor
-        </Button>
-      </Affix>
-    </Card>
+    </div>
   );
 };
