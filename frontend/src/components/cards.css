@@ -150,3 +150,15 @@ textarea:-webkit-autofill:focus {
   background-color: #4b4d66;  
   color: white;              
 }
+
+.about-title {
+  font-size: 1.5rem; /* для больших экранов */
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+@media (max-width: 480px) {
+  .about-title {
+    font-size: 1rem; /* для узких экранов — уменьшаем размер шрифта */
+  }
+}

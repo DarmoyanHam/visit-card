@@ -1,6 +1,7 @@
 import { Card, Typography, Image, Space } from "antd";
 import phone from "../assets/a_c_p_eng.png";
 import { Advantages } from "./Advantages";
+import "./cards.css";
 
 const { Title } = Typography;
 
@@ -17,7 +18,7 @@ export const AboutCardContainer = () => {
                         width: "70%",
                     }}
                 >
-                    <Title level={4} style={{ color: "white" }}>
+                    <Title level={4} style={{ color: "white", fontSize: "1.2rem" }} className="about-title">
                         You no longer need to write down your phone number, data, social media, website on paper, as all these features are included in the L4 VISIT CARD's. You will enter the Card application with one touch using the NFC system or QR code.
                     </Title>
                 </Card>
