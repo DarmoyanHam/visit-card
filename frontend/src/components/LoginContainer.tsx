@@ -57,6 +57,7 @@ export const LoginContainer = () => {
 
       const { token } = await response.json();
       localStorage.setItem("token", token);
+      localStorage.setItem("login", values.login);
       message.success("Login successful!");
       navigate(`${ADMIN_PATH}/${ADMIN_HOME_PATH}`);
     } catch (error) {
