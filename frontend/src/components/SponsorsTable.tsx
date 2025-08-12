@@ -4,17 +4,22 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { CompanyForm } from "./CompanyForm";
 
 interface StaffMember {
+  id?: number;
   name: string;
   position: string;
-  phone?: string;
-  photo?: string; // теперь base64
+  phoneNumber?: string;
+  photoBase64?: string;
 }
 
 interface Company {
-  id: number;
+  id?: number;
   name: string;
-  staff: StaffMember[];
+  staffList: StaffMember[];
+  logoUrl?: string;
+  description?: string;
 }
+
+const token = localStorage.getItem("token");
 
 export const CompanyContainer = () => {
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -22,10 +27,24 @@ export const CompanyContainer = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    fetch("/api/companies")
+    fetch("http://192.168.18.6:8080/api/companies/get-all", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token,
+      },
+    })
       .then((res) => res.json())
-      .then(setCompanies)
-      .catch((err) => console.error("Ошибка при загрузке компаний", err));
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setCompanies(data);
+        } else if (Array.isArray(data.data)) {
+          setCompanies(data.data);
+        } else {
+          setCompanies([]);
+        }
+      })
+      .catch((err) => console.error("Failed to load companies", err));
   }, []);
 
   const handleAdd = () => {
@@ -34,51 +53,67 @@ export const CompanyContainer = () => {
   };
 
   const handleEdit = (company: Company) => {
-    setEditingCompany(company);
+    // Копируем объект, чтобы форма работала с отдельным экземпляром
+    setEditingCompany(JSON.parse(JSON.stringify(company)));
     setModalVisible(true);
   };
 
-  const handleSave = async (company: Omit<Company, "id"> & { id?: number }) => {
-    if (company.id) {
-      const res = await fetch(`/api/companies/${company.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(company),
-      });
+  const handleSave = async (company: Company) => {
+    const url = company.id
+      ? `http://192.168.18.6:8080/api/companies/${company.id}`
+      : `http://192.168.18.6:8080/api/companies/create`;
 
-      if (res.ok) {
-        setCompanies((prev) =>
-          prev.map((c) => (c.id === company.id ? { ...company, id: company.id! } : c))
-        );
-      }
-    } else {
-      const res = await fetch("/api/companies", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(company),
-      });
+    const method = company.id ? "PUT" : "POST";
 
-      if (res.ok) {
-        const newCompany = await res.json();
-        setCompanies((prev) => [...prev, newCompany]);
-      }
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token,
+      },
+      body: JSON.stringify({
+        ...company,
+        staffList: company.staffList.map((s) => ({
+          ...s,
+          company: undefined,
+        })),
+      }),
+    });
+
+    if (!res.ok) {
+      console.error("Failed to save company");
+      return;
     }
 
-    setModalVisible(false);
-    setEditingCompany(null);
+    const savedCompany = await res.json();
+    setCompanies((prev) =>
+      company.id
+        ? prev.map((c) => (c.id === savedCompany.id ? savedCompany : c))
+        : [...prev, savedCompany]
+    );
+
+    handleCancel();
   };
 
   const handleDelete = async (id: number) => {
-    const res = await fetch(`/api/companies/${id}`, { method: "DELETE" });
+    const res = await fetch(`http://192.168.18.6:8080/api/companies/${id}`, {
+      method: "DELETE",
+      headers: { "Authorization": "Bearer " + token },
+    });
     if (res.ok) {
       setCompanies((prev) => prev.filter((c) => c.id !== id));
     }
   };
 
+  const handleCancel = () => {
+    setModalVisible(false);
+    setEditingCompany(null);
+  };
+
   return (
     <div>
       <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-        Добавить компанию
+        Add company
       </Button>
 
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
@@ -86,22 +121,34 @@ export const CompanyContainer = () => {
           <Col key={company.id} span={8}>
             <Card
               style={{ backgroundColor: "#1e1f25", color: "white" }}
-              headStyle={{ backgroundColor: "#1e1f25", color: "white" }}
-              bodyStyle={{ color: "white" }}
+              styles={{ header: { backgroundColor: "#1e1f25", color: "white" } }}
               title={company.name}
               extra={
                 <Space>
                   <Button onClick={() => handleEdit(company)} icon={<EditOutlined />} />
-                  <Button onClick={() => handleDelete(company.id)} icon={<DeleteOutlined />} />
+                  <Button onClick={() => handleDelete(company.id!)} icon={<DeleteOutlined />} />
                 </Space>
               }
             >
-              <p><b>Сотрудников:</b> {company.staff.length}</p>
+              <p><b>Staff:</b> {company.staffList.length}</p>
               <ul style={{ paddingLeft: 0, listStyle: "none" }}>
-                {company.staff.map((member, index) => (
+                {company.staffList.map((member, index) => (
                   <li key={index} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    {member.photo && (
-                      <Avatar src={member.photo} size={32} />
+                    {member.photoBase64 && (
+                      <Avatar
+                        src={
+                          member.photoBase64
+                            ? member.photoBase64.startsWith("data:image")
+                              ? member.photoBase64
+                              : member.photoBase64.startsWith("http")
+                              ? member.photoBase64
+                              : /^[A-Za-z0-9+/=]+$/.test(member.photoBase64)
+                              ? `data:image/png;base64,${member.photoBase64}`
+                              : `http://192.168.18.6:8080/${member.photoBase64}`
+                            : undefined
+                        }
+                        size={32}
+                      />
                     )}
                     <span>{member.position}: {member.name}</span>
                   </li>
@@ -114,14 +161,15 @@ export const CompanyContainer = () => {
 
       <Modal
         open={modalVisible}
-        onCancel={() => setModalVisible(false)}
+        onCancel={handleCancel}
         footer={null}
         width={900}
+        destroyOnHidden
       >
         <CompanyForm
           initialData={editingCompany}
           onSave={handleSave}
-          onCancel={() => setModalVisible(false)}
+          onCancel={handleCancel}
         />
       </Modal>
     </div>
