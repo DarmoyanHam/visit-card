@@ -29,9 +29,9 @@ public class StaffController {
         }
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<String> saveStaffList(@RequestBody List<Staff> staffList) {
-        staffService.saveStaff(staffList);
+    @PostMapping("/save/{id}")
+    public ResponseEntity<String> saveStaffList(@PathVariable Long id, @RequestBody List<Staff> staffList) {
+        staffService.saveStaffForCompany(id, staffList);
         return ResponseEntity.ok("Staff saved");
     }
 
@@ -61,7 +61,7 @@ public class StaffController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteStaff(@PathVariable Long id) {
         try {
             staffService.deleteStaff(id);

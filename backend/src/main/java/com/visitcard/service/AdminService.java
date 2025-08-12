@@ -22,6 +22,10 @@ public class AdminService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public Admin findByLogin(String login) {
+        return adminRepository.findByLogin(login).orElse(null);
+    }
+
     public Admin register(Admin admin) {
         if (adminRepository.existsByLogin(admin.getLogin())) {
             throw new RuntimeException("Login already taken");
