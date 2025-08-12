@@ -10,9 +10,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
 
     private final CorsConfigurationSource corsConfigurationSource;
     private final JwtAuthenticationFilter jwtFilter;
@@ -39,7 +41,11 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/api/admin/**",
                                 "/api/main/**",
-                                "/error"
+                                "/api/companies/**",
+                                "/api/staff/**",
+                                "/api/producers/**",
+                                "/error",
+                                "/images/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -51,5 +57,11 @@ public class SecurityConfig {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("file:///C:/Users/USER/IdeaProjects/visit-card/backend/images/");
     }
 }

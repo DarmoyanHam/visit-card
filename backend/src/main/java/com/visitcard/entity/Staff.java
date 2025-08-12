@@ -1,5 +1,7 @@
 package com.visitcard.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +24,11 @@ public class Staff {
     @Column(name = "position")
     private String position;
 
+    @Column(name = "photo")
+    private String photo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
+    @JsonBackReference
     private Company company;
 }

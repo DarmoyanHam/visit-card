@@ -1,10 +1,16 @@
 package com.visitcard.controller;
 
+import com.visitcard.entity.Admin;
 import com.visitcard.entity.Company;
+import com.visitcard.service.AdminService;
 import com.visitcard.service.CompanyService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.visitcard.dto.CompanyDto;
+
 
 import java.util.List;
 
@@ -12,17 +18,25 @@ import java.util.List;
 @RequestMapping("/api/companies")
 public class CompanyController {
 
-    private final CompanyService companyService;
+    @Autowired
+    private AdminService adminService;
+
+    @Autowired
+    private  CompanyService companyService;
 
     @Autowired
     public CompanyController(CompanyService companyService) {
         this.companyService = companyService;
     }
 
-    @PostMapping
-    public ResponseEntity<Company> createCompany(@RequestBody Company company) {
+    @PostMapping("/create")
+    public ResponseEntity<Company> createCompany(@RequestBody Company company, @RequestParam String adminLogin) {
         try {
-            Company saved = companyService.createCompany(company);
+            Admin admin = adminService.findByLogin(adminLogin);
+            if (admin == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            Company saved = companyService.createCompany(company, admin);
             return ResponseEntity.ok(saved);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -30,36 +44,45 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Company> getCompany(@PathVariable Long id) {
+    public ResponseEntity<CompanyDto> getCompany(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(companyService.getCompanyById(id));
+            CompanyDto dto = companyService.getCompanyDtoById(id);
+            return ResponseEntity.ok(dto);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @GetMapping
+    @GetMapping("/get-all")
     public ResponseEntity<List<Company>> getAllCompanies() {
         return ResponseEntity.ok(companyService.getAllCompanies());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Company> updateCompany(@PathVariable Long id, @RequestBody Company company) {
+    public ResponseEntity<CompanyDto> updateCompany(@PathVariable Long id, @RequestBody Company company) {
         try {
             Company updated = companyService.updateCompany(id, company);
-            return ResponseEntity.ok(updated);
+            System.out.println("Company staff after update:");
+            updated.getStaffList().forEach(s ->
+                    System.out.println(" - " + s.getName() + " (" + s.getPosition() + ")")
+            );
+            CompanyDto dto = companyService.getCompanyDtoById(id);
+            return ResponseEntity.ok(dto);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCompany(@PathVariable Long id) {
         try {
             companyService.deleteCompany(id);
             return ResponseEntity.ok("Company deleted");
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to delete company: " + e.getMessage());
         }
     }
+
 }
