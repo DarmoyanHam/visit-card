@@ -1,4 +1,4 @@
-import { CompanyContainer } from "../components/SponsorsTable"
+import { CompanyContainer } from "../components/CompanyContainer"
 
 export const SponsorsPage = () => {
     return <CompanyContainer />

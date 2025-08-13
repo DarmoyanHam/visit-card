@@ -67,9 +67,7 @@
 .ant-input-password,
 .ant-input-affix-wrapper,
 .ant-input-textarea {
-  background-color: #43445a !important;
   color: white !important;
-  border: 1px solid #5a5b70 !important;
 }
 
 .ant-input::placeholder,
@@ -139,17 +137,20 @@ textarea:-webkit-autofill:focus {
 }
 
 .custom-dropdown .ant-dropdown-menu {
-  background-color: #313346; 
+  background: rgba(0, 0, 0, 0.6) !important; /* чёрный с прозрачностью */
+  backdrop-filter: blur(6px); /* эффект стекла */
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .custom-dropdown .ant-dropdown-menu-item {
-  color: white !important;         
+  color: white !important;
 }
 
 .custom-dropdown .ant-dropdown-menu-item:hover {
-  background-color: #4b4d66;  
-  color: white;              
+  background: rgba(255, 255, 255, 0.15) !important; /* светлая подсветка */
 }
+
 
 .about-title {
   font-size: 1.5rem; /* для больших экранов */
@@ -161,4 +162,14 @@ textarea:-webkit-autofill:focus {
   .about-title {
     font-size: 1rem; /* для узких экранов — уменьшаем размер шрифта */
   }
+}
+
+.login-input {
+  background: rgba(49, 51, 70, 0.15) !important;
+  backdrop-filter: blur(6px);
+}
+
+.login-button {
+  background-color: rgba(0, 0, 0, 0.10) !important;
+  backdrop-filter: blur(6px);
 }

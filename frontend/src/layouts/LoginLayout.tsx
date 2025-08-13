@@ -5,7 +5,7 @@ import {
   PARTNERS_PATH,
   LOGIN_PATH
 } from "../consts/paths";
-import logo from "../assets/l4_vc_logo.png";
+import logo from "../assets/Logo.png";
 import { ContactUs } from "../components/ContactUsContainer";
 import {
   FileTextOutlined,
@@ -31,7 +31,7 @@ const items = [
   },
   {
     key: `/${PARTNERS_PATH}`,
-    label: <NavLink to={`/${PARTNERS_PATH}`}>Partners</NavLink>,
+    label: <NavLink to={`/${PARTNERS_PATH}`}>Our Clients</NavLink>,
     icon: <TeamOutlined />
   }
 ];
@@ -45,7 +45,7 @@ export const LoginLayout = () => {
     <div
       style={{
         minHeight: "100vh",
-        backgroundImage: `url('/bg.png')`, // укажи свой путь
+        backgroundImage: `url('/BG_neww.png')`, // укажи свой путь
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -59,10 +59,12 @@ export const LoginLayout = () => {
             paddingInline: 16,
             backdropFilter: "blur(10px)",
             backgroundColor: "rgba(0, 0, 0, 0.4)", // полупрозрачный
+            padding: isMobile ? "0 8px" : "0 16px", // меньше на телефонах
+            height: isMobile ? 64 : 80, // сжатие
           }}
         >
           <div style={{ display: "flex", alignItems: "center", color: "white", fontSize: 24, marginRight: 32 }}>
-            <img src={logo} alt="logo" style={{ height: 40, marginRight: 12 }} />
+            <img src={logo} alt="logo" style={{ height: isMobile ? 70 : 80 }} />
           </div>
 
           {isMobile ? (
@@ -81,7 +83,7 @@ export const LoginLayout = () => {
                 styles={{
                   body: {
                     padding: 20,
-                    background: "rgba(0,0,0,0.7)",
+                    background: "#001529",
                     color: "white",
                   },
                 }}
@@ -105,11 +107,11 @@ export const LoginLayout = () => {
           )}
         </Header>
 
-        <Content style={{ padding: "24px 50px" }}>
+        <Content style={{ padding: "20px " }}>
           <div
             style={{
               backgroundColor: "rgba(0, 0, 0, 0.5)",
-              padding: "24px",
+              padding: isMobile ? "12px" : "24px 50px",
               borderRadius: "12px",
               color: "white",
               minHeight: "calc(100vh - 64px - 120px)", 
