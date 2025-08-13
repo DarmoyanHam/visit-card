@@ -15,7 +15,7 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu, Drawer, Button, Grid } from "antd";
 import { useState } from "react";
-import logo from "../assets/l4_vc_logo.png";
+import logo from "../assets/Logo.png";
 
 const { Header, Content } = Layout;
 const { useBreakpoint } = Grid;
@@ -33,7 +33,7 @@ const items = [
   },
   {
     key: ADMIN_SPONSORS_PATH,
-    label: <NavLink to={ADMIN_SPONSORS_PATH}>Sponsors</NavLink>,
+    label: <NavLink to={ADMIN_SPONSORS_PATH}>Companies</NavLink>,
     icon: <TeamOutlined />,
   },
   {
@@ -60,7 +60,7 @@ export const AdminLayout = () => {
             marginRight: 32,
           }}
         >
-          <img src={logo} alt="logo" style={{ height: 40, marginRight: 12 }} />
+          <img src={logo} alt="logo" style={{ height: 100 }} />
         </div>
 
         {isMobile ? (
