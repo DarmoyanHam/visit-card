@@ -144,27 +144,27 @@ export const HomeContainer = () => {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Form.Item label={<span style={{ color: "white" }}>Password</span>} name="password" >
-              <Input.Password placeholder="Input password" />
+              <Input.Password placeholder="Input password" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Login</span>} name="login">
-              <Input placeholder="Input login"/>
+              <Input placeholder="Input login" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Name</span>} name="name">
-              <Input placeholder="Name"/>
+              <Input placeholder="Name" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(Armenian)</span>} name="slogan_positionHy">
-              <TextArea rows={2} />
+              <TextArea rows={2} className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(Russian)</span>} name="slogan_positionRu">
-              <TextArea rows={2} />
+              <TextArea rows={2} className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(English)</span>} name="slogan_positionEn">
-              <TextArea rows={2} />
+              <TextArea rows={2} className="login-input"/>
             </Form.Item>
 
 {/* {            <Row gutter={[16, 16]}>

@@ -12,6 +12,7 @@ import {
   TeamOutlined,
   BarChartOutlined,
   MenuOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Drawer, Button, Grid } from "antd";
 import { useState } from "react";
@@ -132,7 +133,7 @@ export const AdminLayout = () => {
             }}
           >
             <Outlet />
-            <Button className="login-button">Log out</Button>
+            <Button className="login-button" icon={<LogoutOutlined />}>Log out</Button>
           </div>
         </Content>
       </Layout>

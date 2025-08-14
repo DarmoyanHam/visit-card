@@ -128,7 +128,7 @@ export const LoginContainer = () => {
           }}
         >
           <Card
-            title={<span style={{ color: "white" }}>Admin Login</span>}
+            // title={<span style={{ color: "white" }}>Admin Login</span>}
             style={{
               width: "100%",
               maxWidth: isMobile ? "420px" : "320px",
@@ -141,6 +141,7 @@ export const LoginContainer = () => {
             bodyStyle={{
               padding: isMobile ? "14px" : "20px",
             }}
+            className="my-card"
           >
             <Form name="login" onFinish={onFinish} layout="vertical">
               <Form.Item
