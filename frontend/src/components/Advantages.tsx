@@ -27,7 +27,12 @@ export const Advantages = () => {
                 borderColor: "white",
                 borderWidth: 1,
                 borderStyle: "solid",
-                width: "70%",
+                width: "98%",
+                background: "rgba(49, 51, 70, 0.4)", // полупрозрачный фон
+                backdropFilter: "blur(10px)", // эффект стекла
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+                boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+                borderRadius: "12px",
             }}
             >
             <Title level={4} style={{ color: "white" }}>
