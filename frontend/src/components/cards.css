@@ -76,6 +76,10 @@
   color: #b0b0b0 !important;
 }
 
+.ant-input-affix-wrapper .anticon {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -172,4 +176,8 @@ textarea:-webkit-autofill:focus {
 .login-button {
   background-color: rgba(0, 0, 0, 0.10) !important;
   backdrop-filter: blur(6px);
+}
+
+.my-card .ant-card-head {
+  border-bottom: none !important;
 }

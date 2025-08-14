@@ -93,6 +93,7 @@ export const LoginContainer = () => {
               width: isMobile ? "70%" : "80%",
               maxWidth: isMobile ? "220px" : "300px",
               height: "auto",
+              marginBottom: isMobile ? "12px" : "40px",
             }}
           />
           <Paragraph
@@ -103,8 +104,8 @@ export const LoginContainer = () => {
               maxWidth: "90%",
             }}
           >
-            New opportunities for your business. Order your digital business
-            card now.
+            New opportunities for your business. Login or order your digital business
+            card if you don't have yet.
           </Paragraph>
           <Dropdown menu={{ items: dropdownItems }} trigger={["hover"]} placement="bottom" overlayClassName="custom-dropdown" className="login-button">
             <Button size={isMobile ? "middle" : "large"}>
@@ -128,7 +129,7 @@ export const LoginContainer = () => {
           }}
         >
           <Card
-            title={<span style={{ color: "white" }}>Admin Login</span>}
+            // title={<span style={{ color: "white" }}>Admin Login</span>}
             style={{
               width: "100%",
               maxWidth: isMobile ? "420px" : "320px",
@@ -141,6 +142,7 @@ export const LoginContainer = () => {
             bodyStyle={{
               padding: isMobile ? "14px" : "20px",
             }}
+            className="my-card"
           >
             <Form name="login" onFinish={onFinish} layout="vertical">
               <Form.Item

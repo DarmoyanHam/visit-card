@@ -176,16 +176,20 @@ export const ContactTable = () => {
             </Title>
           </Col>
           <Col>
-            <Button onClick={() => form.submit()}>Save</Button>
+            <Button onClick={() => form.submit()} className="login-button">Save</Button>
           </Col>
         </Row>
       }
       className="custom-table-wrapper"
       style={{
-          backgroundColor: "#262835ff",
-          borderColor: "#313346ff",
-          borderWidth: 1,
-          borderStyle: "solid",
+          // backgroundColor: "#262835ff",
+          // borderColor: "#313346ff",
+          // borderWidth: 1,
+          // borderStyle: "solid",
+          background: "rgba(49, 51, 70, 0.4)", // полупрозрачный фон
+          backdropFilter: "blur(10px)", // эффект стекла
+          border: "1px solid rgba(255, 255, 255, 0.15)",
+          boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
       }}  
     >
 
@@ -197,71 +201,71 @@ export const ContactTable = () => {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Form.Item label={<span style={{ color: "white" }}>Phone</span>} name="tel" >
-              <Input placeholder="Input phone number" />
+              <Input placeholder="Input phone number" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Email</span>} name="mail">
-              <Input placeholder="Input email"/>
+              <Input placeholder="Input email" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>SMS</span>} name="sms">
-              <Input placeholder="Input phone number"/>
+              <Input placeholder="Input phone number" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Website</span>} name="website">
-              <Input placeholder="Input Website link"/>
+              <Input placeholder="Input Website link" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Location(google maps)</span>} name="location">
-              <Input placeholder="Input your location"/>
+              <Input placeholder="Input your location" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>WhatsApp</span>} name="whatsapp">
-              <Input placeholder="Input your whatsApp"/>
+              <Input placeholder="Input your whatsApp" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>LinkedIn</span>} name="linkedin">
-              <Input placeholder="Input your linkedIn"/>
+              <Input placeholder="Input your linkedIn" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Viber</span>} name="viber">
-              <Input placeholder="Input your viber"/>
+              <Input placeholder="Input your viber" className="login-input"/>
             </Form.Item>
           
             <Form.Item label={<span style={{ color: "white" }}>Telegram</span>} name="telegram">
-              <Input placeholder="Input your telegram"/>
+              <Input placeholder="Input your telegram" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Facebook</span>} name="facebook">
-              <Input placeholder="Input your facebook"/>
+              <Input placeholder="Input your facebook" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Messenger</span>} name="messenger">
-              <Input placeholder="Input your Messenger"/>
+              <Input placeholder="Input your Messenger" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Instagram</span>} name="instagram">
-              <Input placeholder="Input your instagram"/>
+              <Input placeholder="Input your instagram" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>TikTok</span>} name="tiktok">
-              <Input placeholder="Input your tiktok"/>
+              <Input placeholder="Input your tiktok" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>YouTube</span>} name="youtube">
-              <Input placeholder="Input your youtube"/>
+              <Input placeholder="Input your youtube" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>X</span>} name="twitter">
-              <Input placeholder="Input your X"/>
+              <Input placeholder="Input your X" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>VK</span>} name="vk">
-              <Input placeholder="Input vk"/>
+              <Input placeholder="Input vk" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Snapchat</span>} name="snapchat">
-              <Input placeholder="Input snapchat"/>
+              <Input placeholder="Input snapchat" className="login-input"/>
             </Form.Item>
           </div>
         </Form>

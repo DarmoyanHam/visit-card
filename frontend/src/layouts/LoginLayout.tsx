@@ -64,7 +64,7 @@ export const LoginLayout = () => {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", color: "white", fontSize: 24, marginRight: 32 }}>
-            <img src={logo} alt="logo" style={{ height: isMobile ? 70 : 80 }} />
+            <img src={logo} alt="logo" style={{ height: 30 }} />
           </div>
 
           {isMobile ? (
@@ -74,6 +74,7 @@ export const LoginLayout = () => {
                 icon={<MenuOutlined style={{ color: "white", fontSize: 20 }} />}
                 onClick={() => setDrawerVisible(true)}
                 style={{ marginLeft: "auto" }}
+                className="login-button"
               />
               <Drawer
                 title="Menu"

@@ -12,10 +12,12 @@ import {
   TeamOutlined,
   BarChartOutlined,
   MenuOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Drawer, Button, Grid } from "antd";
 import { useState } from "react";
 import logo from "../assets/Logo.png";
+import { Footer } from "antd/es/layout/layout";
 
 const { Header, Content } = Layout;
 const { useBreakpoint } = Grid;
@@ -49,57 +51,92 @@ export const AdminLayout = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
 
   return (
-    <Layout style={{ minHeight: "100vh", backgroundColor: "#000526ff" }}>
-      <Header style={{ display: "flex", alignItems: "center", paddingInline: 16 }}>
-        <div
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundImage: `url('/BG_neww.png')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <Layout style={{ minHeight: "100vh", backgroundColor: "transparent" }}>
+        <Header
           style={{
             display: "flex",
             alignItems: "center",
-            color: "white",
-            fontSize: 24,
-            marginRight: 32,
+            paddingInline: 16,
+            backdropFilter: "blur(10px)",
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            padding: isMobile ? "0 8px" : "0 16px",
+            height: isMobile ? 64 : 80,
           }}
         >
-          <img src={logo} alt="logo" style={{ height: 100 }} />
-        </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              color: "white",
+              fontSize: 24,
+              marginRight: 32,
+            }}
+          >
+            <img src={logo} alt="logo" style={{ height: 30 }} />
+          </div>
 
-        {isMobile ? (
-          <>
-            <Button
-              type="text"
-              icon={<MenuOutlined style={{ color: "white", fontSize: 20 }} />}
-              onClick={() => setDrawerVisible(true)}
-              style={{ marginLeft: "auto" }}
-            />
-            <Drawer
-              title="Menu"
-              placement="right"
-              onClose={() => setDrawerVisible(false)}
-              open={drawerVisible}
-              styles={{ body: { padding: 0, background: "#001529" } }} // <- новейший синтаксис
-            >
-              <Menu
-                theme="dark"
-                mode="vertical"
-                items={items}
-                onClick={() => setDrawerVisible(false)}
+          {isMobile ? (
+            <>
+              <Button
+                type="text"
+                icon={<MenuOutlined style={{ color: "white", fontSize: 20 }} />}
+                onClick={() => setDrawerVisible(true)}
+                style={{ marginLeft: "auto" }}
+                className="login-button"
               />
-            </Drawer>
-          </>
-        ) : (
-          <Menu
-            theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={[`${ADMIN_PATH}/${ADMIN_HOME_PATH}`]}
-            style={{ flex: 1 }}
-            items={items}
-          />
-        )}
-      </Header>
+              <Drawer
+                title="Menu"
+                placement="right"
+                onClose={() => setDrawerVisible(false)}
+                open={drawerVisible}
+                styles={{
+                  body: { padding: 20, background: "#001529", color: "white" },
+                }}
+              >
+                <Menu
+                  theme="dark"
+                  mode="vertical"
+                  items={items}
+                  onClick={() => setDrawerVisible(false)}
+                />
+              </Drawer>
+            </>
+          ) : (
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              defaultSelectedKeys={[`${ADMIN_PATH}/${ADMIN_HOME_PATH}`]}
+              style={{ flex: 1, background: "transparent" }}
+              items={items}
+            />
+          )}
+        </Header>
 
-      <Content style={{ padding: "24px 50px" }}>
-        <Outlet />
-      </Content>
-    </Layout>
+        <Content style={{ padding: "5px" }}>
+          <div
+            style={{
+              // backgroundColor: "rgba(0, 0, 0, 0.5)",
+              // backdropFilter: "blur(6px)",
+              padding: isMobile ? "12px" : "24px 50px",
+              borderRadius: "12px",
+              color: "white",
+              minHeight: "calc(100vh - 64px)",
+            }}
+          >
+            <Outlet />
+            <Button className="login-button" icon={<LogoutOutlined />}>Log out</Button>
+          </div>
+        </Content>
+      </Layout>
+    </div>
   );
 };

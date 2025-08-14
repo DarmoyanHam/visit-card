@@ -113,7 +113,7 @@ export const HomeContainer = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-10">
-      <Card 
+      <Card
         title={
           <Row justify="space-between" align="middle">
             <Col>
@@ -122,18 +122,20 @@ export const HomeContainer = () => {
               </Title>
             </Col>
             <Col>
-              <Button onClick={() => form.submit()}>Save</Button>
+              <Button onClick={() => form.submit()} className="login-button">Save</Button>
             </Col>
           </Row>
         }
         className="shadow-xl rounded-2xl"
         style={{
-            backgroundColor: "#262835ff",
-            borderColor: "#313346ff",
-            borderWidth: 1,
-            borderStyle: "solid",
-        }}  
+          WebkitBackdropFilter: "blur(12px)", // для Safari
+          background: "rgba(49, 51, 70, 0.4)", // полупрозрачный фон
+          backdropFilter: "blur(10px)", // эффект стекла
+          border: "1px solid rgba(255, 255, 255, 0.15)",
+          boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+        }}
       >
+
         <Form
           layout="vertical"
           form={form}
@@ -142,27 +144,27 @@ export const HomeContainer = () => {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Form.Item label={<span style={{ color: "white" }}>Password</span>} name="password" >
-              <Input.Password placeholder="Input password" />
+              <Input.Password placeholder="Input password" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Login</span>} name="login">
-              <Input placeholder="Input login"/>
+              <Input placeholder="Input login" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Name</span>} name="name">
-              <Input placeholder="Name"/>
+              <Input placeholder="Name" className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(Armenian)</span>} name="slogan_positionHy">
-              <TextArea rows={2} />
+              <TextArea rows={2} className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(Russian)</span>} name="slogan_positionRu">
-              <TextArea rows={2} />
+              <TextArea rows={2} className="login-input"/>
             </Form.Item>
 
             <Form.Item label={<span style={{ color: "white" }}>Slogan/Position(English)</span>} name="slogan_positionEn">
-              <TextArea rows={2} />
+              <TextArea rows={2} className="login-input"/>
             </Form.Item>
 
 {/* {            <Row gutter={[16, 16]}>
