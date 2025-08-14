@@ -176,16 +176,20 @@ export const ContactTable = () => {
             </Title>
           </Col>
           <Col>
-            <Button onClick={() => form.submit()}>Save</Button>
+            <Button onClick={() => form.submit()} className="login-button">Save</Button>
           </Col>
         </Row>
       }
       className="custom-table-wrapper"
       style={{
-          backgroundColor: "#262835ff",
-          borderColor: "#313346ff",
-          borderWidth: 1,
-          borderStyle: "solid",
+          // backgroundColor: "#262835ff",
+          // borderColor: "#313346ff",
+          // borderWidth: 1,
+          // borderStyle: "solid",
+          background: "rgba(49, 51, 70, 0.4)", // полупрозрачный фон
+          backdropFilter: "blur(10px)", // эффект стекла
+          border: "1px solid rgba(255, 255, 255, 0.15)",
+          boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
       }}  
     >
 

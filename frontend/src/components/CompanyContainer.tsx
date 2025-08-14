@@ -189,7 +189,7 @@ export const CompanyContainer = () => {
 
   return (
     <div>
-      <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+      <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd} className="login-button">
         Add company
       </Button>
 

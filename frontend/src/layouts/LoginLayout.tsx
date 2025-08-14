@@ -74,6 +74,7 @@ export const LoginLayout = () => {
                 icon={<MenuOutlined style={{ color: "white", fontSize: 20 }} />}
                 onClick={() => setDrawerVisible(true)}
                 style={{ marginLeft: "auto" }}
+                className="login-button"
               />
               <Drawer
                 title="Menu"
