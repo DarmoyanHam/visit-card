@@ -18,6 +18,7 @@ import { Layout, Menu, Drawer, Button, Grid } from "antd";
 import { useState } from "react";
 import logo from "../assets/Logo.png";
 import { Footer } from "antd/es/layout/layout";
+import { LanguageSwitcher } from "../i18n/LanguageSwitcher";
 
 const { Header, Content } = Layout;
 const { useBreakpoint } = Grid;
@@ -108,9 +109,11 @@ export const AdminLayout = () => {
                   items={items}
                   onClick={() => setDrawerVisible(false)}
                 />
+                <LanguageSwitcher />
               </Drawer>
             </>
           ) : (
+            <>
             <Menu
               theme="dark"
               mode="horizontal"
@@ -118,6 +121,8 @@ export const AdminLayout = () => {
               style={{ flex: 1, background: "transparent" }}
               items={items}
             />
+            <LanguageSwitcher />
+            </>
           )}
         </Header>
 

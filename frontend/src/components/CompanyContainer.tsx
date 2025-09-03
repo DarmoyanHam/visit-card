@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, Button, Modal, Row, Col, Space, Avatar } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { CompanyForm } from "./CompanyForm";
+import { IP } from "../consts/ip";
 
 interface StaffMember {
   id?: number;
@@ -16,7 +17,7 @@ interface StaffMemberToSend {
   name: string;
   position: string;
   phoneNumber?: string;
-  photo?: string; // для отправки на бэк
+  photo?: string; 
 }
 
 interface Company {
@@ -35,46 +36,45 @@ export const CompanyContainer = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    console.log("useEffect: Loading companies. Token exists:", !!token);
-    fetch("http://192.168.18.6:8080/api/companies/get-all", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
+  console.log("useEffect: Loading companies. Token exists:", !!token);
+  fetch(`http://${IP}:8080/api/companies/get-all`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+  })
+    .then((res) => {
+      console.log("useEffect: Fetch companies response status:", res.status);
+      return res.json();
     })
-      .then((res) => {
-        console.log("useEffect: Fetch companies response status:", res.status);
-        return res.json();
-      })
-      .then((data) => {
-        let loadedCompanies: Company[] = [];
-        if (Array.isArray(data)) {
-          loadedCompanies = data.map((company) => ({
-            ...company,
-            staffList: company.staffList.map((member: any) => ({
-              ...member,
-              photoBase64: member.photo, // поле с бэка photo → photoBase64
-              photo: undefined,
-            })),
-          }));
-        }
-        setCompanies(loadedCompanies);
-        console.log("useEffect: Companies loaded:", loadedCompanies.length);
-        console.log(
-          "useEffect: Sample company data:",
-          loadedCompanies[0]
-            ? {
-                name: loadedCompanies[0].name,
-                logoUrl: loadedCompanies[0].logoUrl?.substring(0, 50), // Truncate for logging
-                staffPhotoExample:
-                loadedCompanies[0].staffList[0]?.photoBase64?.substring(0, 50),
-              }
-            : "No companies"
-        );
-      })
-      .catch((err) => console.error("Failed to load companies", err));
-  }, []);
+    .then((data) => {
+      let loadedCompanies: Company[] = [];
+      if (Array.isArray(data)) {
+        loadedCompanies = data.map((company) => ({
+          ...company,
+          staffList: company.staffList.map((member: any) => ({
+            ...member,
+            photoBase64: member.photo 
+              ? (isValidBase64(member.photo) || member.photo.startsWith('data:image'))
+                ? member.photo 
+                : getImageSrc(member.photo) 
+              : undefined,
+            photo: undefined,
+          })),
+          logoUrl: company.logoUrl 
+            ? (isValidBase64(company.logoUrl) || company.logoUrl.startsWith('data:image'))
+              ? company.logoUrl
+              : getImageSrc(company.logoUrl)
+            : undefined
+        }));
+      }
+      setCompanies(loadedCompanies);
+      console.log("useEffect: Companies loaded:", loadedCompanies.length);
+    })
+    .catch((err) => console.error("Failed to load companies", err));
+}, []);
+
 
   const handleAdd = () => {
     setEditingCompany(null);
@@ -86,62 +86,103 @@ export const CompanyContainer = () => {
     setModalVisible(true);
   };
 
- const handleSave = async (company: Company & { staffList: any[] }) => {
-  const login = localStorage.getItem("login");
+  const handleSave = async (company: Company & { staffList: any[] }) => {
+    const login = localStorage.getItem("login");
 
-  const url = company.id
-    ? `http://192.168.18.6:8080/api/companies/${company.id}`
-    : `http://192.168.18.6:8080/api/companies/create?adminLogin=${encodeURIComponent(login)}`;
+    const url = company.id
+      ? `http://${IP}:8080/api/companies/${company.id}`
+      : `http://${IP}:8080/api/companies/create?adminLogin=${login}`;
 
-  const method = company.id ? "PUT" : "POST";
+    const method = company.id ? "PUT" : "POST";
 
-  const res = await fetch(url, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      ...company,
-      staffList: company.staffList.map((s) => ({
-        ...s,
-        company: undefined,
-      })),
-    }),
-  });
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        ...company,
+        staffList: company.staffList.map((s) => ({
+          ...s,
+          company: undefined,
+        })),
+      }),
+    });
 
-  if (!res.ok) {
-    console.error("Failed to save company");
-    return;
+    if (res.ok) {
+    const savedCompany = await res.json();
+    console.log("Saved company response:", savedCompany);
+
+    let finalCompanyData;
+    
+    try {
+      const freshRes = await fetch(`http://${IP}:8080/api/companies/${savedCompany.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      
+      if (freshRes.ok) {
+        const freshData = await freshRes.json();
+        console.log("Fresh company data:", freshData);
+        
+        finalCompanyData = {
+          ...freshData,
+          staffList: freshData.staffList.map((member: any) => ({
+            ...member,
+            photoBase64: member.photo 
+              ? (isValidBase64(member.photo) || member.photo.startsWith('data:image'))
+                ? member.photo 
+                : getImageSrc(member.photo)
+              : undefined,
+            photo: undefined,
+          })),
+          logoUrl: freshData.logoUrl 
+            ? (isValidBase64(freshData.logoUrl) || freshData.logoUrl.startsWith('data:image'))
+              ? freshData.logoUrl
+              : getImageSrc(freshData.logoUrl)
+            : undefined
+        };
+      } else {
+        finalCompanyData = {
+          ...savedCompany,
+          staffList: savedCompany.staffList.map((member: any) => ({
+            ...member,
+            photoBase64: member.photo,
+            photo: undefined,
+          })),
+        };
+      }
+    } catch (error) {
+      console.error("Error fetching fresh data:", error);
+      finalCompanyData = {
+        ...savedCompany,
+        staffList: savedCompany.staffList.map((member: any) => ({
+          ...member,
+          photoBase64: member.photo,
+          photo: undefined,
+        })),
+      };
+    }
+
+    console.log("Final company data for state:", finalCompanyData);
+
+    setCompanies((prev) =>
+      company.id
+        ? prev.map((c) => (c.id === finalCompanyData.id ? finalCompanyData : c))
+        : [...prev, finalCompanyData]
+    );
+
+    handleCancel();
   }
-
-  const savedCompany = await res.json();
-
-  // Преобразуем поле photo → photoBase64 для локального стейта
-  const updatedCompany = {
-    ...savedCompany,
-    staffList: savedCompany.staffList.map((member: any) => ({
-      ...member,
-      photoBase64: member.photo, // вот здесь переносим photo в photoBase64
-      photo: undefined, // удаляем поле photo чтобы не путать UI
-    })),
   };
-
-  // Обновляем локальный стейт — теперь UI увидит фото сразу
-  setCompanies((prev) =>
-    company.id
-      ? prev.map((c) => (c.id === updatedCompany.id ? updatedCompany : c))
-      : [...prev, updatedCompany]
-  );
-
-  handleCancel();
-};
-
-
 
   const handleDelete = async (id: number) => {
     console.log(`handleDelete: Deleting company id ${id}`);
-    const res = await fetch(`http://192.168.18.6:8080/api/companies/${id}`, {
+    const res = await fetch(`http://${IP}:8080/api/companies/${id}`, {
       method: "DELETE",
       headers: { "Authorization": `Bearer ${token}` },
     });
@@ -182,7 +223,7 @@ export const CompanyContainer = () => {
       return url;
     }
     console.log("getImageSrc: Constructing server URL");
-    const constructedUrl = `http://192.168.18.6:8080/${url}`;
+    const constructedUrl = `http://${IP}:8080/${url}`;
     console.log(`getImageSrc: Constructed URL: ${constructedUrl}`);
     return constructedUrl;
   };
@@ -197,7 +238,13 @@ export const CompanyContainer = () => {
         {companies.map((company) => (
           <Col key={company.id} span={8}>
             <Card
-              style={{ backgroundColor: "#1e1f25", color: "white" }}
+              style={{
+                WebkitBackdropFilter: "blur(12px)",
+                background: "rgba(49, 51, 70, 0.4)",
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+                boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+              }}
               styles={{ header: { backgroundColor: "#1e1f25", color: "white" } }}
               title={
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -206,7 +253,7 @@ export const CompanyContainer = () => {
                       src={getImageSrc(company.logoUrl)}
                       size={32}
                       onError={() => {
-                        console.error(`Failed to load logo for company ${company.name}: ${company.logoUrl?.substring(0, 50)}`);
+                        console.error(`Failed to load logo for company ${company.name}`);
                         return true;
                       }}
                     />
@@ -227,27 +274,17 @@ export const CompanyContainer = () => {
                 </Space>
               }
             >
-              <p>
+              <p style={{ color: "white" }}>
+                <b>Description:</b> {company.description || "No description"}
+              </p>
+              <p style={{ color: "white" }}>
                 <b>Staff:</b> {company.staffList.length}
               </p>
-              <ul style={{ paddingLeft: 0, listStyle: "none" }}>
+              <ul style={{ paddingLeft: 16, listStyle: "disc", color: "white" }}>
                 {company.staffList.map((member, index) => (
-                  <li
-                    key={index}
-                    style={{ display: "flex", alignItems: "center", gap: 8 }}
-                  >
-                    {member.photoBase64 && (
-                      <Avatar
-                        src={getImageSrc(member.photoBase64)}
-                        size={32}
-                        onError={() => {
-                          console.error(`Failed to load photo for staff ${member.name}: ${member.photoBase64?.substring(0, 50)}`);
-                          return true;
-                        }}
-                      />
-                    )}
+                  <li key={index} style={{ marginBottom: 4 }}>
                     <span>
-                      {member.position}: {member.name}
+                      <b>{member.position}:</b> {member.name}
                     </span>
                   </li>
                 ))}
@@ -262,7 +299,7 @@ export const CompanyContainer = () => {
         onCancel={handleCancel}
         footer={null}
         width={900}
-        destroyOnHidden
+        destroyOnHidden={true}
       >
         <CompanyForm
           initialData={editingCompany}

@@ -14,8 +14,8 @@ export const AboutCardContainer = () => {
                         borderWidth: 1,
                         borderStyle: "solid",
                         width: "98%",
-                        background: "rgba(49, 51, 70, 0.4)", // полупрозрачный фон
-                        backdropFilter: "blur(10px)", // эффект стекла
+                        background: "rgba(49, 51, 70, 0.4)", 
+                        backdropFilter: "blur(10px)", 
                         border: "1px solid rgba(255, 255, 255, 0.15)",
                         boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
                         borderRadius: "12px",

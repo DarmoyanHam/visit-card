@@ -2,32 +2,98 @@ import {
   Card, 
   Form, 
   Input, 
-  // Checkbox, 
   Typography, 
   Button, 
-  // Upload, 
-  // ColorPicker, 
   Row, 
-  Col 
+  Col, 
+  Upload,
+  Modal,
+  message
 } from "antd";
-//import { UploadOutlined } from "@ant-design/icons";
 import { 
   useState, 
   useEffect 
 } from "react";
 import "./cards.css";
+import { UploadOutlined, EyeOutlined, DeleteOutlined } from "@ant-design/icons";
+import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { IP } from "../consts/ip";
 
 const { TextArea } = Input;
 const { Title } = Typography;
 
 export const HomeContainer = () => {
     const [form] = Form.useForm();
-    const [initialValues, setInitialValues] = useState<Record<string, string>>({});
-    
+    const [initialValues, setInitialValues] = useState<Record<string, any>>({});
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const [previewVisible, setPreviewVisible] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [previewTitle, setPreviewTitle] = useState('');
+    const [avatarData, setAvatarData] = useState<{base64: string, fileName: string, fileType: string} | null>(null);
+    const [avatarDeleted, setAvatarDeleted] = useState(false);
 
     const token = localStorage.getItem("token");
 
-    const onFinish = (values: Record<string, string>) => {
+    const getBase64 = (file: File): Promise<string> =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = error => reject(error);
+      });
+
+    const handlePreview = async (file: UploadFile) => {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj as File);
+      }
+
+      setPreviewImage(file.url || (file.preview as string));
+      setPreviewVisible(true);
+      setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
+    };
+
+    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+      setFileList(newFileList);
+    };
+
+    const handleUpload = async (file: File) => {
+      try {
+        const base64 = await getBase64(file);
+        const base64Data = base64.split(',')[1];
+        
+        setAvatarData({
+          base64: base64Data,
+          fileName: file.name,
+          fileType: file.type
+        });
+        
+        setAvatarDeleted(false);
+        
+        setFileList([{
+          uid: '-1',
+          name: file.name,
+          status: 'done',
+          url: base64, 
+        }]);
+
+        message.success("Изображение добавлено! Нажмите Save для сохранения.");
+        return false; 
+      } catch (error) {
+        console.error("Ошибка при обработке изображения:", error);
+        message.error("Ошибка при обработке изображения");
+        return false;
+      }
+    };
+
+    const handleRemove = async (file: UploadFile) => {
+      setAvatarDeleted(true);
+      setAvatarData(null);
+      setFileList([]);
+      message.success("Изображение удалено! Нажмите Save для сохранения изменений.");
+      return true;
+    };
+
+    const onFinish = async (values: Record<string, string>) => {
       if (!token) {
         console.error("Token not found.");
         return;
@@ -37,7 +103,9 @@ export const HomeContainer = () => {
         "slogan_positionHy",
         "slogan_positionRu",
         "slogan_positionEn",
-        "name"
+        "name",
+        "login",        
+        "password"     
       ];
 
       const updates: Record<string, string> = {};
@@ -50,31 +118,73 @@ export const HomeContainer = () => {
         }
       }
 
+      console.log("Updates to send:", updates);
+      try {
+        if (Object.keys(updates).length > 0) {
+          const response = await fetch(`http://${IP}:8080/api/main/fields`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + token,
+            },
+            body: JSON.stringify(updates),
+          });
 
-      fetch("http://192.168.18.6:8080/api/main/fields", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token,
-        },
-        body: JSON.stringify(updates),
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("Failed to update fields");
-          return res.json();
-        })
-        .then((data) => {
-          console.log("Данные успешно сохранены:", data);
-        })
-        .catch((error) => {
-          console.error("Ошибка при обновлении данных:", error);
-      });
+          if (!response.ok) {
+            throw new Error("Failed to update fields");
+          }
+        }
+
+        if (avatarDeleted && initialValues.avatar) {
+          const deleteResponse = await fetch(`http://${IP}:8080/api/main/avatar`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + token,
+            },
+          });
+
+          if (!deleteResponse.ok) {
+            throw new Error("Failed to delete avatar");
+          }
+          
+          setInitialValues(prev => ({ ...prev, avatar: null }));
+        } else if (avatarData) {
+          const uploadResponse = await fetch(`http://${IP}:8080/api/main/avatar`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + token,
+            },
+            body: JSON.stringify({
+              avatar: avatarData.base64,
+              fileName: avatarData.fileName,
+              fileType: avatarData.fileType
+            }),
+          });
+
+          if (!uploadResponse.ok) {
+            throw new Error("Failed to upload avatar");
+          }
+
+          const avatarResult = await uploadResponse.json();
+          setInitialValues(prev => ({ ...prev, avatar: avatarResult.avatarUrl }));
+        }
+
+        setAvatarData(null);
+        setAvatarDeleted(false);
+
+        console.log("Данные успешно сохранены");
+        message.success("Все изменения успешно сохранены!");
+        
+      } catch (error) {
+        console.error("Ошибка при сохранении:", error);
+        message.error("Ошибка при сохранении данных");
+      }
     };
 
-
-
     useEffect(() => {
-        fetch(`http://192.168.18.6:8080/api/main/token`, {
+        fetch(`http://${IP}:8080/api/main/token`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -94,22 +204,31 @@ export const HomeContainer = () => {
             slogan_positionHy: data.slogan_positionHy || "",
             slogan_positionRu: data.slogan_positionRu || "",
             slogan_positionEn: data.slogan_positionEn || "",
-            // nameColor: data.nameColor,
-            // logoBgColor: data.logoBgColor,
-            // sloganColor: data.sloganColor,
-            // iconColor: data.iconColor,
-            // iconBgColor: data.iconBgColor,
-            // buttonColor: data.buttonColor,
-            // addToContactColor: data.addToContactColor,
-            // langBtnColor: data.langBtnColor,
           };
           form.setFieldsValue(vals);
           setInitialValues(vals);
+
+          if (data.avatar) {
+            setFileList([{
+              uid: '-1',
+              name: 'avatar.jpg',
+              status: 'done',
+              url: data.avatar,
+            }]);
+            setAvatarDeleted(false);
+          }
         })
         .catch((error) => {
           console.error("Ошибка при загрузке данных:", error);
         });
-    }, []);
+    }, [form, token]);
+
+    const uploadButton = (
+      <div>
+        <UploadOutlined />
+        <div style={{ marginTop: 8 }}>Upload</div>
+      </div>
+    );
 
   return (
     <div className="max-w-4xl mx-auto py-10">
@@ -128,9 +247,9 @@ export const HomeContainer = () => {
         }
         className="shadow-xl rounded-2xl"
         style={{
-          WebkitBackdropFilter: "blur(12px)", // для Safari
-          background: "rgba(49, 51, 70, 0.4)", // полупрозрачный фон
-          backdropFilter: "blur(10px)", // эффект стекла
+          WebkitBackdropFilter: "blur(12px)",
+          background: "rgba(49, 51, 70, 0.4)",
+          backdropFilter: "blur(10px)",
           border: "1px solid rgba(255, 255, 255, 0.15)",
           boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
         }}
@@ -167,82 +286,38 @@ export const HomeContainer = () => {
               <TextArea rows={2} className="login-input"/>
             </Form.Item>
 
-{/* {            <Row gutter={[16, 16]}>
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Form.Item label={<span style={{ color: "white" }}>Name color</span>} name="nameColor">
-                  <ColorPicker/>
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Form.Item label={<span style={{ color: "white" }}>Logo background color</span>} name="logoBgColor">
-                  <ColorPicker/>
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Form.Item label={<span style={{ color: "white" }}>Slogan/position color</span>} name="sloganColor">
-                  <ColorPicker/>
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Form.Item label={<span style={{ color: "white" }}>Icon color</span>} name="iconColor">
-                  <ColorPicker/>
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Form.Item label={<span style={{ color: "white" }}>Icon background color</span>} name="iconBgColor">
-                  <ColorPicker/>
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Form.Item label={<span style={{ color: "white" }}>Button name color</span>} name="buttonColor">
-                  <ColorPicker/>
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Form.Item label={<span style={{ color: "white" }}>"Add to contacts" button color</span>} name="addToContactColor">
-                  <ColorPicker/>
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Form.Item label={<span style={{ color: "white" }}>Language button color</span>} name="langBtnColor">
-                  <ColorPicker/>
-                </Form.Item>
-              </Col>
-            </Row>
-
-
-            <Form.Item label={<span style={{ color: "white" }}>Selections</span>}>
-                <Checkbox.Group>
-                    <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-                        <Checkbox value="opt4"><span style={{ color: "white" }}>Slogan/Position bold</span></Checkbox>
-                        <Checkbox value="opt1"><span style={{ color: "white" }}>Button name shadow</span></Checkbox>
-                        <Checkbox value="opt2"><span style={{ color: "white" }}>Disable icon blink</span></Checkbox>
-                        <Checkbox value="opt3"><span style={{ color: "white" }}>Book a visit</span></Checkbox>
-                        <Checkbox value="opt4"><span style={{ color: "white" }}>Feedback</span></Checkbox>
-                    </div>
-                </Checkbox.Group>
-            </Form.Item>
-
             <Form.Item label={<span style={{ color: "white" }}>Logo</span>} name="logo">
-              <Upload listType="picture" maxCount={1} beforeUpload={() => false}>
-                <Button icon={<UploadOutlined />}>Upload</Button>
+              <Upload
+                listType="picture-card"
+                fileList={fileList}
+                onPreview={handlePreview}
+                onChange={handleChange}
+                beforeUpload={handleUpload}
+                onRemove={handleRemove}
+                accept="image/*"
+                maxCount={1}
+                style={{ color: "white" }}
+              >
+                {fileList.length >= 1 ? null : uploadButton}
               </Upload>
             </Form.Item>
 
-            <Form.Item label={<span style={{ color: "white" }}>Background picture</span>} name="background">
-              <Upload listType="picture" maxCount={1} beforeUpload={() => false}>
-                <Button icon={<UploadOutlined />}>Upload</Button>
-              </Upload>
-            </Form.Item>} */}
           </div>
         </Form>
+
+        <Modal 
+          open={previewVisible} 
+          title={previewTitle} 
+          footer={null} 
+          onCancel={() => setPreviewVisible(false)}
+          width={800}
+        >
+          <img 
+            alt="preview" 
+            style={{ width: '100%', maxHeight: '600px', objectFit: 'contain' }} 
+            src={previewImage} 
+          />
+        </Modal>
       </Card>
     </div>
   );

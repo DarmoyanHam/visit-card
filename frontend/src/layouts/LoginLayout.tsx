@@ -14,6 +14,7 @@ import {
   MenuOutlined
 } from "@ant-design/icons";
 import { useState } from "react";
+import { LanguageSwitcher } from "../i18n/LanguageSwitcher";
 
 const { Header, Content, Footer } = Layout;
 const { useBreakpoint } = Grid;
@@ -45,7 +46,7 @@ export const LoginLayout = () => {
     <div
       style={{
         minHeight: "100vh",
-        backgroundImage: `url('/BG_neww.png')`, // укажи свой путь
+        backgroundImage: `url('/BG_neww.png')`, 
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -58,9 +59,9 @@ export const LoginLayout = () => {
             alignItems: "center",
             paddingInline: 16,
             backdropFilter: "blur(10px)",
-            backgroundColor: "rgba(0, 0, 0, 0.4)", // полупрозрачный
-            padding: isMobile ? "0 8px" : "0 16px", // меньше на телефонах
-            height: isMobile ? 64 : 80, // сжатие
+            backgroundColor: "rgba(0, 0, 0, 0.4)", 
+            padding: isMobile ? "0 8px" : "0 16px", 
+            height: isMobile ? 64 : 80, 
           }}
         >
           <div style={{ display: "flex", alignItems: "center", color: "white", fontSize: 24, marginRight: 32 }}>
@@ -95,16 +96,20 @@ export const LoginLayout = () => {
                   items={items}
                   onClick={() => setDrawerVisible(false)}
                 />
+                <LanguageSwitcher />
               </Drawer>
             </>
           ) : (
-            <Menu
-              theme="dark"
-              mode="horizontal"
-              defaultSelectedKeys={[`/${LOGIN_PATH}`]}
-              style={{ flex: 1, background: "transparent" }}
-              items={items}
-            />
+            <>
+              <Menu
+                theme="dark"
+                mode="horizontal"
+                defaultSelectedKeys={[`/${LOGIN_PATH}`]}
+                style={{ flex: 1, background: "transparent" }}
+                items={items}
+              />
+              <LanguageSwitcher />
+            </>
           )}
         </Header>
 

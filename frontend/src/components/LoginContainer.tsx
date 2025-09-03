@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ADMIN_HOME_PATH, ADMIN_PATH } from "../consts/paths";
 import logo from "../assets/Logo.png";
 import { ShoppingOutlined, DownOutlined } from "@ant-design/icons";
+import { IP } from "../consts/ip";
 
 const { Title, Paragraph } = Typography;
 const { useBreakpoint } = Grid;
@@ -39,7 +40,7 @@ export const LoginContainer = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://192.168.18.6:8080/api/auth/login", {
+      const response = await fetch(`http://${IP}:8080/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
@@ -73,7 +74,6 @@ export const LoginContainer = () => {
         }}
         gutter={[isMobile ? 12 : 24, isMobile ? 12 : 24]}
       >
-        {/* Логотип + текст */}
         <Col
           xs={24}
           md={12}
@@ -118,7 +118,6 @@ export const LoginContainer = () => {
           </Dropdown>
         </Col>
 
-        {/* Форма логина */}
         <Col
           xs={24}
           md={12}
@@ -133,8 +132,8 @@ export const LoginContainer = () => {
             style={{
               width: "100%",
               maxWidth: isMobile ? "420px" : "320px",
-              background: "rgba(49, 51, 70, 0.4)", // полупрозрачный фон
-              backdropFilter: "blur(10px)", // эффект стекла
+              background: "rgba(49, 51, 70, 0.4)", 
+              backdropFilter: "blur(10px)", 
               border: "1px solid rgba(255, 255, 255, 0.15)",
               boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
               borderRadius: "12px",
