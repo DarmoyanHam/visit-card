@@ -2,10 +2,13 @@ import { Card, Typography, Image, Space } from "antd";
 import phone from "../assets/a_c_p_eng.png";
 import { Advantages } from "./Advantages";
 import "./cards.css";
+import { useTranslation } from "react-i18next";
 
 const { Paragraph, Text } = Typography;
 
 export const AboutCardContainer = () => {
+    const { t } = useTranslation();
+
     return <>
         <Space direction="vertical" style={{ display: 'flex' }}>
             <div style={{  display: "flex", justifyContent: "center" }}>
@@ -22,7 +25,7 @@ export const AboutCardContainer = () => {
                     }}
                 >
                     <Text style={{ color: "white", fontSize: "1.2rem" }} className="about-title">
-                        You no longer need to write down your phone number, data, social media, website on paper, as all these features are included in the our cards. You will enter the Card application with one touch using the NFC system or QR code.
+                        {t("aboutcards.text")}
                     </Text>
                 </Card>
             </div>

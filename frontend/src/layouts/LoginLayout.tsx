@@ -15,32 +15,38 @@ import {
 } from "@ant-design/icons";
 import { useState } from "react";
 import { LanguageSwitcher } from "../i18n/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const { Header, Content, Footer } = Layout;
 const { useBreakpoint } = Grid;
 
-const items = [
+
+const getMenuItems = (t: any) => [
   {
     key: `/${LOGIN_PATH}`,
-    label: <NavLink to={`/${LOGIN_PATH}`}>Main</NavLink>,
-    icon: <FormOutlined />
+    label: <NavLink to={`/${LOGIN_PATH}`}>{t("loginnavbar.main")}</NavLink>,
+    icon: <FormOutlined />,
   },
   {
     key: `/${ABOUT_PATH}`,
-    label: <NavLink to={`/${ABOUT_PATH}`}>About Card</NavLink>,
-    icon: <FileTextOutlined />
+    label: <NavLink to={`/${ABOUT_PATH}`}>{t("loginnavbar.about")}</NavLink>,
+    icon: <FileTextOutlined />,
   },
   {
     key: `/${PARTNERS_PATH}`,
-    label: <NavLink to={`/${PARTNERS_PATH}`}>Our Clients</NavLink>,
-    icon: <TeamOutlined />
-  }
+    label: <NavLink to={`/${PARTNERS_PATH}`}>{t("loginnavbar.clients")}</NavLink>,
+    icon: <TeamOutlined />,
+  },
 ];
 
+
 export const LoginLayout = () => {
+
   const [drawerVisible, setDrawerVisible] = useState(false);
   const screens = useBreakpoint();
   const isMobile = !screens.md;
+  const { t } = useTranslation();
+  const items = getMenuItems(t);
 
   return (
     <div
@@ -78,7 +84,7 @@ export const LoginLayout = () => {
                 className="login-button"
               />
               <Drawer
-                title="Menu"
+                title={t("loginnavbar.menu")}
                 placement="right"
                 onClose={() => setDrawerVisible(false)}
                 open={drawerVisible}

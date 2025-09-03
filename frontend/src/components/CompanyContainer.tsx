@@ -3,6 +3,7 @@ import { Card, Button, Modal, Row, Col, Space, Avatar } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { CompanyForm } from "./CompanyForm";
 import { IP } from "../consts/ip";
+import { useTranslation } from "react-i18next";
 
 interface StaffMember {
   id?: number;
@@ -34,6 +35,7 @@ export const CompanyContainer = () => {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [editingCompany, setEditingCompany] = useState<Company | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
   console.log("useEffect: Loading companies. Token exists:", !!token);
@@ -231,7 +233,7 @@ export const CompanyContainer = () => {
   return (
     <div>
       <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd} className="login-button">
-        Add company
+        {t("companies.add")}
       </Button>
 
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
@@ -275,10 +277,10 @@ export const CompanyContainer = () => {
               }
             >
               <p style={{ color: "white" }}>
-                <b>Description:</b> {company.description || "No description"}
+                <b>{t("companies.description")}</b> {company.description || "No description"}
               </p>
               <p style={{ color: "white" }}>
-                <b>Staff:</b> {company.staffList.length}
+                <b>{t("companies.staff")}</b> {company.staffList.length}
               </p>
               <ul style={{ paddingLeft: 16, listStyle: "disc", color: "white" }}>
                 {company.staffList.map((member, index) => (

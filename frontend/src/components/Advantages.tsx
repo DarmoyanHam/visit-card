@@ -1,24 +1,23 @@
 import { Card, Typography, List, Divider } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 
 
 const { Title, Text } = Typography;
 
-const advantages = [
-  "Contactum VISIT CARD application enables you to to use it in 3 languages: Armenian, Russian, English.",
-  "Your Contactum VISIT CARD application will be given with your own logo or individual photo.",
-  "Your card will contain references(buttons) such as phone number, email, SMS, Facebook, Instagram, etc.",
-  "Contactum VISIT CARD enables you to get sales in almost all companies which use this application as well.",
-  "In the \"Employee\" section you can include details of your all employees(phone number, email, booking of the visit, SMS, etc).",
-  "The \"Branches\" button includes all the information of the branches of the current company.",
-  "The card enables the customer to add your contact details with one touch. Along with that, website references will be added too.",
-  "You can book your visit in Contactum VISIT CARD mentioning your details, date and time of the visit as well as send messages any time you like.",
-  "Contactum VISIT CARD is easily uploaded to your home screen and enables you to use it without having a physical card with you.",
-  "Along with Contactum VISIT CARD you will be provided with QR code which you can use in any case as it totally includes your application.",
-  "You can share your Contactum VISIT CARD in a series of social websites.",
+const getAdvantages = (t) => [
+  t("advantages.1"),
+  t("advantages.2"),
+  t("advantages.3"),
+  t("advantages.4"),
+  t("advantages.5"),
+  t("advantages.6"),
 ];
 
 export const Advantages = () => {
+    const {t} = useTranslation();
+    const advantages = getAdvantages(t);
+
     return <>
         <div style={{ display: "flex", justifyContent: "center", marginTop: "3rem" }}>
             <Card
@@ -36,7 +35,7 @@ export const Advantages = () => {
             }}
             >
             <Title level={4} style={{ color: "white" }}>
-                Advantages of Contactum Visit Card:
+                {t("advantages.title")}
             </Title>
 
             <Divider style={{ borderColor: 'white', color: "white" }}/>

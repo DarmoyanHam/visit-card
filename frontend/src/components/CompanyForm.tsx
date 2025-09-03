@@ -3,6 +3,7 @@ import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import type { RcFile, UploadFile } from "antd/es/upload";
 import { IP } from "../consts/ip";
+import { useTranslation } from "react-i18next";
 
 interface StaffMemberToSend {
   id?: number;
@@ -18,6 +19,7 @@ export const CompanyForm = ({ initialData, onSave, onCancel }) => {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [originalLogoUrl, setOriginalLogoUrl] = useState<string>("");
   const [originalStaffPhotos, setOriginalStaffPhotos] = useState<{[key: number]: string}>({});
+  const { t } = useTranslation();
 
   const getBase64 = (file: RcFile | Blob): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -184,13 +186,13 @@ export const CompanyForm = ({ initialData, onSave, onCancel }) => {
   return (
     <>
       <Form form={form} onFinish={onFinish} layout="vertical">
-        <Form.Item name="name" label="Название компании" rules={[{ required: true }]}>
+        <Form.Item name="name" label={t("companyform.cname")} rules={[{ required: true }]}>
           <Input />
         </Form.Item>
 
         <Form.Item
           name="logoUrl"
-          label="Логотип компании"
+          label={t("companyform.logo")}
           valuePropName="fileList"
           getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
         >
@@ -214,31 +216,31 @@ export const CompanyForm = ({ initialData, onSave, onCancel }) => {
           </Upload>
         </Form.Item>
 
-        <Form.Item name="description" label="Описание компании">
+        <Form.Item name="description" label={t("companyform.description")}>
           <Input.TextArea rows={4} />
         </Form.Item>
 
         <Form.List name="staffList">
           {(fields, { add, remove }) => (
             <>
-              <label>Сотрудники</label>
+              <label>{t("companyform.staff")}</label>
               {fields.map(({ key, name }) => (
                 <div key={key} style={{ marginBottom: 16, padding: 16, border: "1px solid #d9d9d9", borderRadius: 6 }}>
-                  <Form.Item name={[name, "name"]} label="Имя" rules={[{ required: true }]}>
-                    <Input placeholder="Имя сотрудника" />
+                  <Form.Item name={[name, "name"]} label={t("companyform.name")} rules={[{ required: true }]}>
+                    <Input />
                   </Form.Item>
                   
-                  <Form.Item name={[name, "position"]} label="Должность" rules={[{ required: true }]}>
-                    <Input placeholder="Должность" />
+                  <Form.Item name={[name, "position"]} label={t("companyform.position")} rules={[{ required: true }]}>
+                    <Input />
                   </Form.Item>
                   
-                  <Form.Item name={[name, "phoneNumber"]} label="Телефон">
-                    <Input placeholder="Номер телефона" />
+                  <Form.Item name={[name, "phoneNumber"]} label={t("companyform.phone")}>
+                    <Input />
                   </Form.Item>
                   
                   <Form.Item
                     name={[name, "photoBase64"]}
-                    label="Фото сотрудника"
+                    label={t("companyform.photo")}
                     valuePropName="fileList"
                     getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
                   >
@@ -257,7 +259,7 @@ export const CompanyForm = ({ initialData, onSave, onCancel }) => {
                     >
                       <div>
                         <PlusOutlined />
-                        <div style={{ marginTop: 8 }}>Загрузить</div>
+                        <div style={{ marginTop: 8 }}>{t("companyform.upload")}</div>
                       </div>
                     </Upload>
                   </Form.Item>
@@ -267,13 +269,13 @@ export const CompanyForm = ({ initialData, onSave, onCancel }) => {
                     onClick={() => remove(name)}
                     style={{ marginTop: 8 }}
                   >
-                    Удалить сотрудника
+                    {t("companyform.delete")}
                   </Button>
                 </div>
               ))}
               <Form.Item>
                 <Button type="dashed" onClick={() => add()} icon={<PlusOutlined />} block>
-                  Добавить сотрудника
+                  {t("companyform.add")}
                 </Button>
               </Form.Item>
             </>
@@ -282,9 +284,9 @@ export const CompanyForm = ({ initialData, onSave, onCancel }) => {
 
         <Form.Item>
           <Space>
-            <Button onClick={onCancel}>Отмена</Button>
+            <Button onClick={onCancel}>{t("companyform.cancel")}</Button>
             <Button type="primary" htmlType="submit">
-              Сохранить
+              {t("companyform.save")}
             </Button>
           </Space>
         </Form.Item>

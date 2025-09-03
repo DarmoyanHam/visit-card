@@ -1,0 +1,48 @@
+{
+    "loginnavbar": {
+        "main": "Main",
+        "about": "About Card",
+        "clients": "Our Clients",
+        "menu": "Menu"
+    },
+    "adminnavbar": {
+        "home": "Home",
+        "contacts": "Contacts",
+        "companies": "Companies",
+        "statistics": "Statistics",
+        "menu": "Menu"
+    },
+    "aboutcards": {
+        "text": "You no longer need to write down your phone number, data, social media, website on paper, as all these features are included in the our cards. You will enter the Card application with one touch using the NFC system or QR code."
+    },
+    "advantages": {
+        "title": "Advantages of Contactum Visit Card:",
+        "1": "Contactum VISIT CARD application enables you to to use it in 3 languages: Armenian, Russian, English.",
+        "2": "Your Contactum VISIT CARD application will be given with your own logo or individual photo.",
+        "3": "Your card will contain references(buttons) such as phone number, email, SMS, Facebook, Instagram, etc.",
+        "4": "In the \"Company\" section you can include details of your all employees(phone number, email, SMS, etc).",
+        "5": "The card enables the customer to add your contact details with one touch.",
+        "6": "Along with Contactum VISIT CARD you will be provided with QR code which you can use in any case as it totally includes your application."
+    },
+    "companies": {
+        "add": "Add company",
+        "description": "Description:",
+        "nodescr": "No description",
+        "staff": "Staff:"
+    },
+    "companyform": {
+        "cname": "Company name",
+        "logo": "Company logo",
+        "description": "Company description",
+        "staff": "Staff",
+        "name": "Name",
+        "position": "Position",
+        "phone": "Phone number",
+        "photo": "Photo",
+        "upload": "upload",
+        "delete": "delete",
+        "add": "add",
+        "cancel": "cancel",
+        "save": "save"
+    }
+}
