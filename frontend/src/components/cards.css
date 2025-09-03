@@ -89,7 +89,7 @@ textarea:-webkit-autofill:focus {
   background-color: #43445a !important;
   -webkit-box-shadow: 0 0 0px 1000px #43445a inset !important;
   box-shadow: 0 0 0px 1000px #43445a inset !important;
-  -webkit-text-fill-color: white !important; /* ← вот это ключевое */
+  -webkit-text-fill-color: white !important; 
   color: white !important;
   border: 1px solid #5a5b70 !important;
   transition: background-color 5000s ease-in-out 0s !important;
@@ -141,8 +141,8 @@ textarea:-webkit-autofill:focus {
 }
 
 .custom-dropdown .ant-dropdown-menu {
-  background: rgba(0, 0, 0, 0.6) !important; /* чёрный с прозрачностью */
-  backdrop-filter: blur(6px); /* эффект стекла */
+  background: rgba(0, 0, 0, 0.6) !important; 
+  backdrop-filter: blur(6px); 
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -152,19 +152,19 @@ textarea:-webkit-autofill:focus {
 }
 
 .custom-dropdown .ant-dropdown-menu-item:hover {
-  background: rgba(255, 255, 255, 0.15) !important; /* светлая подсветка */
+  background: rgba(255, 255, 255, 0.15) !important; 
 }
 
 
 .about-title {
-  font-size: 1.5rem; /* для больших экранов */
+  font-size: 1.5rem; 
   overflow-wrap: break-word;
   word-break: break-word;
 }
 
 @media (max-width: 480px) {
   .about-title {
-    font-size: 1rem; /* для узких экранов — уменьшаем размер шрифта */
+    font-size: 1rem; 
   }
 }
 

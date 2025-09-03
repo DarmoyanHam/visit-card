@@ -18,29 +18,31 @@ import { Layout, Menu, Drawer, Button, Grid } from "antd";
 import { useState } from "react";
 import logo from "../assets/Logo.png";
 import { Footer } from "antd/es/layout/layout";
+import { LanguageSwitcher } from "../i18n/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const { Header, Content } = Layout;
 const { useBreakpoint } = Grid;
 
-const items = [
+const getMenuElements = (t) => [
   {
     key: ADMIN_HOME_PATH,
-    label: <NavLink to={ADMIN_HOME_PATH}>Home</NavLink>,
+    label: <NavLink to={ADMIN_HOME_PATH}>{t("adminnavbar.home")}</NavLink>,
     icon: <HomeOutlined />,
   },
   {
     key: ADMIN_CONTACTS_PATH,
-    label: <NavLink to={ADMIN_CONTACTS_PATH}>Contacts</NavLink>,
+    label: <NavLink to={ADMIN_CONTACTS_PATH}>{t("adminnavbar.contacts")}</NavLink>,
     icon: <ContactsOutlined />,
   },
   {
     key: ADMIN_SPONSORS_PATH,
-    label: <NavLink to={ADMIN_SPONSORS_PATH}>Companies</NavLink>,
+    label: <NavLink to={ADMIN_SPONSORS_PATH}>{t("adminnavbar.companies")}</NavLink>,
     icon: <TeamOutlined />,
   },
   {
     key: ADMIN_STATISTICS_PATH,
-    label: <NavLink to={ADMIN_STATISTICS_PATH}>Statistics</NavLink>,
+    label: <NavLink to={ADMIN_STATISTICS_PATH}>{t("adminnavbar.statistics")}</NavLink>,
     icon: <BarChartOutlined />,
   },
 ];
@@ -49,6 +51,8 @@ export const AdminLayout = () => {
   const screens = useBreakpoint();
   const isMobile = !screens.md;
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const { t } = useTranslation();
+  const items = getMenuElements(t);
 
   return (
     <div
@@ -94,7 +98,7 @@ export const AdminLayout = () => {
                 className="login-button"
               />
               <Drawer
-                title="Menu"
+                title={t("adminnavbar.menu")}
                 placement="right"
                 onClose={() => setDrawerVisible(false)}
                 open={drawerVisible}
@@ -108,9 +112,11 @@ export const AdminLayout = () => {
                   items={items}
                   onClick={() => setDrawerVisible(false)}
                 />
+                <LanguageSwitcher />
               </Drawer>
             </>
           ) : (
+            <>
             <Menu
               theme="dark"
               mode="horizontal"
@@ -118,6 +124,8 @@ export const AdminLayout = () => {
               style={{ flex: 1, background: "transparent" }}
               items={items}
             />
+            <LanguageSwitcher />
+            </>
           )}
         </Header>
 

@@ -2,6 +2,7 @@ import { Table, Input, Checkbox, Button, Card, Row, Col, Typography, Form } from
 import { useState, useEffect } from "react";
 import type { ColumnsType } from "antd/es/table";
 import "./ContactTable.css";
+import { IP } from "../consts/ip";
 
 const { Title } = Typography;
 
@@ -43,7 +44,7 @@ export const ContactTable = () => {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-        fetch(`http://192.168.18.6:8080/api/contact/by-token`, {
+        fetch(`http://${IP}:8080/api/contact/by-token`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -101,7 +102,7 @@ export const ContactTable = () => {
 
       console.log(updates);
 
-      fetch("http://192.168.18.6:8080/api/contact/by-token/fields", {
+      fetch(`http://${IP}:8080/api/contact/by-token/fields`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

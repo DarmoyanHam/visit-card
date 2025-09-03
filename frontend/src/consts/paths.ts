@@ -1,6 +1,6 @@
 export const HOME_PATH = "/";
 export const SIGNUP_PATH = "/signup";
-export const CARD_PATH = "/card/:adminId";
+export const CARD_PATH = "/:adminId";
 export const LOGIN_PATH = "login";
 export const ADMIN_PATH = "/admin";
 export const ADMIN_HOME_PATH = "home";

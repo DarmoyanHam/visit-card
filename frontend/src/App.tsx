@@ -1,5 +1,4 @@
 import { RouterProvider } from 'react-router';
-import VisitCard from './components/VisitCard';
 import { router } from './routes/router';
 
 function App() {

@@ -11,8 +11,8 @@ import {
     ADMIN_STATISTICS_PATH,
     ADMIN_PATH,
 } from "../consts/paths";
-import { PublicLayout } from "../layouts/PublicLayout";
-import VisitCard from "../components/VisitCard";
+import { PublicCard } from "../components/PublicCard";
+import { PublicCardPage } from "../pages/PublicCardPage";
 import { LoginLayout } from "../layouts/LoginLayout";
 import { LoginPage } from "../pages/LoginPage";
 import { AboutCardsPage } from "../pages/AboutCardsPage";
@@ -25,20 +25,10 @@ import { SponsorsPage } from "../pages/SponsorsPage";
 import { StatisticsPage } from "../pages/StatisticsPage";
 
 
-{/* <ProtectedRoute>
-        <AdminLayout />
-      </ProtectedRoute> */}
-
 export const router = createBrowserRouter([
   {
     path: CARD_PATH,
-    element: <PublicLayout />,
-    children: [
-      {
-        index: true,
-        element: <VisitCard />
-      },
-    ],
+    element: <PublicCardPage />,
   },
   {
     path: HOME_PATH,

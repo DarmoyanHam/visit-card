@@ -2,27 +2,32 @@ import { Form, Input, Button, Upload, Space, message, Modal } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import type { RcFile, UploadFile } from "antd/es/upload";
+import { IP } from "../consts/ip";
+import { useTranslation } from "react-i18next";
 
 interface StaffMemberToSend {
   id?: number;
   name: string;
   position: string;
   phoneNumber?: string;
-  photo?: string; // для отправки на бэк
+  photo?: string; 
 }
 
 export const CompanyForm = ({ initialData, onSave, onCancel }) => {
   const [form] = Form.useForm();
   const [previewImage, setPreviewImage] = useState<string>("");
   const [previewVisible, setPreviewVisible] = useState(false);
+  const [originalLogoUrl, setOriginalLogoUrl] = useState<string>("");
+  const [originalStaffPhotos, setOriginalStaffPhotos] = useState<{[key: number]: string}>({});
+  const { t } = useTranslation();
 
-  const getBase64 = (file: RcFile): Promise<string> =>
+  const getBase64 = (file: RcFile | Blob): Promise<string> =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
         const result = reader.result as string;
-        resolve(result.split(",")[1] || ""); // возвращаем чистый base64
+        resolve(result.split(",")[1] || ""); 
       };
       reader.onerror = (error) => reject(error);
     });
@@ -43,14 +48,32 @@ export const CompanyForm = ({ initialData, onSave, onCancel }) => {
 
   useEffect(() => {
     if (initialData) {
+      console.log("useEffect - initialData:", initialData);
+      console.log("useEffect - initialData.logoUrl:", initialData.logoUrl);
+      
+      const originalLogo = initialData.originalLogoUrl || initialData.logoUrl || "";
+      console.log("useEffect - Setting originalLogoUrl to:", originalLogo);
+      setOriginalLogoUrl(originalLogo);
+
+      const originalPhotos: {[key: number]: string} = {};
+      (initialData.staffList || []).forEach((member, index) => {
+        if (member.originalPhoto || member.photoBase64) {
+          console.log(`useEffect - Staff ${index} photo:`, member.originalPhoto || member.photoBase64);
+          originalPhotos[index] = member.originalPhoto || member.photoBase64;
+        }
+      });
+      setOriginalStaffPhotos(originalPhotos);
+
       const staffList = (initialData.staffList || []).map((member) => {
         let fileList: UploadFile[] = [];
         if (member.photoBase64) {
-          const fullUrl = /^[A-Za-z0-9+/=]+$/.test(member.photoBase64)
+          const isBase64 = /^[A-Za-z0-9+/=]+$/.test(member.photoBase64);
+          const fullUrl = isBase64
             ? `data:image/png;base64,${member.photoBase64}`
             : member.photoBase64.startsWith("http")
             ? member.photoBase64
-            : `http://192.168.18.6:8080/${member.photoBase64}`;
+            : `http://${IP}:8080/${member.photoBase64}`;
+          
           fileList = [
             {
               uid: "-1",
@@ -60,16 +83,21 @@ export const CompanyForm = ({ initialData, onSave, onCancel }) => {
             },
           ];
         }
-        return { ...member, photoBase64: fileList };
+        return { 
+          ...member, 
+          photoBase64: fileList,
+        };
       });
 
       let logoFileList: UploadFile[] = [];
       if (initialData.logoUrl) {
-        const fullLogoUrl = /^[A-Za-z0-9+/=]+$/.test(initialData.logoUrl)
+        const isBase64 = /^[A-Za-z0-9+/=]+$/.test(initialData.logoUrl);
+        const fullLogoUrl = isBase64
           ? `data:image/png;base64,${initialData.logoUrl}`
           : initialData.logoUrl.startsWith("http")
           ? initialData.logoUrl
-          : `http://192.168.18.6:8080/${initialData.logoUrl}`;
+          : `http://${IP}:8080/${initialData.logoUrl}`;
+        
         logoFileList = [
           {
             uid: "-1",
@@ -87,69 +115,84 @@ export const CompanyForm = ({ initialData, onSave, onCancel }) => {
       });
     } else {
       form.resetFields();
+      setOriginalLogoUrl("");
+      setOriginalStaffPhotos({});
     }
   }, [initialData, form]);
 
   const onFinish = async (values) => {
+    console.log("onFinish values:", values);
+    console.log("originalLogoUrl:", originalLogoUrl);
+    console.log("originalStaffPhotos:", originalStaffPhotos);
+
     const staffWithPhotoField: StaffMemberToSend[] = await Promise.all(
-        (values.staffList || []).map(async (member) => {
+      (values.staffList || []).map(async (member, index) => {
         let photo = null;
+        
         if (member.photoBase64 && member.photoBase64.length > 0) {
-            const file = member.photoBase64[0];
-            if (file.originFileObj) {
+          const file = member.photoBase64[0];
+          
+          if (file.originFileObj && file.uid !== "-1") {
             photo = await getBase64(file.originFileObj as RcFile);
-            } else if (file.url) {
-            if (file.url.startsWith("data:image")) {
-                photo = file.url.split(",")[1];
-            } else {
-                const response = await fetch(file.url);
-                const blob = await response.blob();
-                photo = await getBase64(blob as RcFile);
-            }
-            }
+          } else {
+            photo = originalStaffPhotos[index] || null;
+          }
         }
+        
         return {
-            ...member,
-            photo,  // отправляем как photo
-            photoBase64: undefined, // убираем photoBase64, чтобы не путать
+          id: member.id,
+          name: member.name,
+          position: member.position,
+          phoneNumber: member.phoneNumber,
+          photo,
         };
-        })
+      })
     );
 
     let logo = null;
+    
     if (values.logoUrl && values.logoUrl.length > 0) {
-        const logoFile = values.logoUrl[0];
-        if (logoFile.originFileObj) {
+      const logoFile = values.logoUrl[0];
+      console.log("logoFile:", logoFile);
+      console.log("logoFile.uid:", logoFile.uid);
+      console.log("logoFile.originFileObj:", !!logoFile.originFileObj);
+      
+      if (logoFile.originFileObj && logoFile.uid !== "-1") {
+        console.log("New logo file uploaded - sending base64");
         logo = await getBase64(logoFile.originFileObj as RcFile);
-        } else if (logoFile.url) {
-        logo = logoFile.url.startsWith("data:image")
-            ? logoFile.url.split(",")[1]
-            : logoFile.url;
-        }
+      } else {
+        console.log("Logo not changed - sending original file path:", originalLogoUrl);
+        logo = originalLogoUrl;
+      }
+    } else if (originalLogoUrl) {
+      console.log("No logo in form but original exists - sending original file path:", originalLogoUrl);
+      logo = originalLogoUrl;
     }
 
+    console.log("Final logo value:", logo);
+
     const companyToSend = {
-        ...initialData,
-        name: values.name,
-        description: values.description,
-        staffList: staffWithPhotoField,
-        logoUrl: logo,
+      ...initialData,
+      name: values.name,
+      description: values.description,
+      staffList: staffWithPhotoField,
+      logoUrl: logo,
     };
 
+    console.log("Отправляем компанию:", companyToSend);
     onSave(companyToSend);
-    };
-
+  };
 
   return (
     <>
       <Form form={form} onFinish={onFinish} layout="vertical">
-        <Form.Item name="name" label="Название компании" rules={[{ required: true }]}>
+        <Form.Item name="name" label={t("companyform.cname")} rules={[{ required: true }]}>
           <Input />
         </Form.Item>
 
         <Form.Item
           name="logoUrl"
-          label="Логотип компании"
+          label={t("companyform.logo")}
           valuePropName="fileList"
           getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
         >
@@ -173,27 +216,31 @@ export const CompanyForm = ({ initialData, onSave, onCancel }) => {
           </Upload>
         </Form.Item>
 
-        <Form.Item name="description" label="Описание компании">
+        <Form.Item name="description" label={t("companyform.description")}>
           <Input.TextArea rows={4} />
         </Form.Item>
 
         <Form.List name="staffList">
           {(fields, { add, remove }) => (
             <>
-              <label>Сотрудники</label>
+              <label>{t("companyform.staff")}</label>
               {fields.map(({ key, name }) => (
-                <div key={key} style={{ marginBottom: 8 }}>
-                  <Form.Item name={[name, "name"]} rules={[{ required: true }]}>
-                    <Input placeholder="Имя" />
+                <div key={key} style={{ marginBottom: 16, padding: 16, border: "1px solid #d9d9d9", borderRadius: 6 }}>
+                  <Form.Item name={[name, "name"]} label={t("companyform.name")} rules={[{ required: true }]}>
+                    <Input />
                   </Form.Item>
-                  <Form.Item name={[name, "position"]} rules={[{ required: true }]}>
-                    <Input placeholder="Должность" />
+                  
+                  <Form.Item name={[name, "position"]} label={t("companyform.position")} rules={[{ required: true }]}>
+                    <Input />
                   </Form.Item>
-                  <Form.Item name={[name, "phone"]}>
-                    <Input placeholder="Телефон" />
+                  
+                  <Form.Item name={[name, "phoneNumber"]} label={t("companyform.phone")}>
+                    <Input />
                   </Form.Item>
+                  
                   <Form.Item
                     name={[name, "photoBase64"]}
+                    label={t("companyform.photo")}
                     valuePropName="fileList"
                     getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
                   >
@@ -212,16 +259,23 @@ export const CompanyForm = ({ initialData, onSave, onCancel }) => {
                     >
                       <div>
                         <PlusOutlined />
-                        <div style={{ marginTop: 8 }}>Загрузить</div>
+                        <div style={{ marginTop: 8 }}>{t("companyform.upload")}</div>
                       </div>
                     </Upload>
                   </Form.Item>
-                  <Button icon={<MinusCircleOutlined />} onClick={() => remove(name)} />
+                  
+                  <Button 
+                    icon={<MinusCircleOutlined />} 
+                    onClick={() => remove(name)}
+                    style={{ marginTop: 8 }}
+                  >
+                    {t("companyform.delete")}
+                  </Button>
                 </div>
               ))}
               <Form.Item>
-                <Button type="dashed" onClick={() => add()} icon={<PlusOutlined />}>
-                  Добавить сотрудника
+                <Button type="dashed" onClick={() => add()} icon={<PlusOutlined />} block>
+                  {t("companyform.add")}
                 </Button>
               </Form.Item>
             </>
@@ -230,9 +284,9 @@ export const CompanyForm = ({ initialData, onSave, onCancel }) => {
 
         <Form.Item>
           <Space>
-            <Button onClick={onCancel}>Отмена</Button>
+            <Button onClick={onCancel}>{t("companyform.cancel")}</Button>
             <Button type="primary" htmlType="submit">
-              Сохранить
+              {t("companyform.save")}
             </Button>
           </Space>
         </Form.Item>

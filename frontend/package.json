@@ -12,8 +12,13 @@
   "dependencies": {
     "@ant-design/icons": "^6.0.0",
     "antd": "^5.26.6",
+    "flag-icons": "^7.5.0",
+    "i18next": "^25.4.2",
+    "i18next-browser-languagedetector": "^8.2.0",
+    "i18next-http-backend": "^3.0.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-i18next": "^15.7.3",
     "react-router": "^7.5.3",
     "react-router-dom": "^7.7.1"
   },
